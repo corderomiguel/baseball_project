@@ -1,0 +1,374 @@
+---
+title: "Proyecto Beisbol en R"
+subtitle: |
+    | Universidad Simón Bolivar
+    | Estadística para matemáticos-CO3322
+    | Profesor: Pedro Ovalles 
+    | Enero-Marzo 2022
+author: |
+    | Eduardo Gavazut
+    | Luis Riera
+    | Miguel Cordero
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+lang: es
+fig.height: 2in
+papersize: a4
+fontsize: 11pt
+header-includes:
+    - \usepackage{fontawesome}
+    - \usepackage{graphicx}
+    - \usepackage{xcolor}
+    - \usepackage{fancyhdr}
+    - \pagestyle{fancy}
+    - \usepackage{hyperref}
+    - \usepackage{url}
+    - \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue, citecolor=blue}
+    - \usepackage{lastpage} 
+    - \lhead{CO3322-Estadística para matemáticos}
+    - \rhead{Prof. Pedro Ovalles}
+    - \cfoot{}
+    - \lfoot{Proyecto del Team }
+    - \rfoot{Página\ \thepage\ de\ \pageref{LastPage}}
+    - \renewcommand{\headrulewidth}{3pt}
+    - \renewcommand{\footrulewidth}{3pt}
+    - \usepackage{amsthm}
+    - \usepackage{amsmath}
+    - \usepackage{tcolorbox}
+    - \tcbuselibrary{listings,theorems}
+    - \newtcbtheorem[number within = ts]{teo}{Teorema}{colback=blue!5,colframe=blue!50!black,fonttitle=\bfseries}{th}
+    - \newtcbtheorem[number within = ns]{mydef}{Definición}{colback=green!5,colframe=green!50!black,fonttitle=\bfseries}{defi}
+    - \newtcbtheorem[number within = es]{ex}{Ejercicio}{colback=red!5,colframe=red!75!black,fonttitle=\bfseries}{exe}
+    - \renewcommand{\qedsymbol}{$\blacksquare$}
+    - \newcounter{ns}
+    - \newcounter{ts}
+    - \newcounter{es}
+    - \setcounter{ns}{1}
+    - \setcounter{ts}{1}
+    - \setcounter{es}{1}
+classoption: dvipsnames
+output:
+  pdf_document:
+    keep_tex: true
+  html_document: default
+  html_notebook: default
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  comment = '', fig.width = 8, fig.height = 5, message = F, warning=FALSE, fig.align= "center"
+)
+```
+
+# Planteamiento del problema 
+
+# Descripción de los datos 
+
+## Realizar un análisis descriptivo de los datos
+
+```{r}
+library(readxl)
+Baseball <- read_excel("~/GitHub/data/Baseball.xlsx")
+head(Baseball, n=5)
+```
+
+### ¿Qué clase es la base de datos?
+
+```{r}
+class(Baseball)
+```
+
+Por los resultados obtenidos con la ayuda de la función `class` de `R`, la base de datos es del tipo `tbl_df`, que es una subclase de la clase `data.frame`. `tbl_df` cumple con tener propiedades diferentes por defecto y se suele referir a ellas como `tibble`. Es una clase eficiente para trabajar con bases de datos grandes y su visualización.   
+
+### Utilice el comand `str` para explicar las variables y el tipo de cada variable de la base de datos
+
+```{r}
+str(Baseball)
+```
+Se tienen $6$ variables, `X1,X2,X3,X4,X5,X6`. Cada una con $45$ valores de tipo `double` o número decimal, que representan las $45$ observaciones aleatorias realizadas a jugadores de la (MLB). 
+
+Cada variable representa la siguiente información: 
+
+* `X1`: tasa de bateo, en (hit/veces al bate).
+* `X2`: carreras anotadas/veces al bate. 
+* `X3`: dobles/ veces al bate. 
+* `X4`: tripes/ veces al bate.
+* `X5`: jonrones/ veces al bate.
+* `X6`: ponches/ veces al bate. 
+
+### Calcule por cada variable los estadisticos para cada variable numérica
+
+Para obtener los estadísticos de las seis (6) variables de esta base de datos, se inicia por guardar las $45$ observaciones en un vector que represente a cada variable: 
+
+```{r}
+X1<- Baseball$X1
+X2<- Baseball$X2
+```
+
+Con los datos vectorizados y con apoyo de las funciones de `R` obtener las siguiente información 
+
+
+```{r}
+# Media
+media <- c(mean(X1), mean(X2))
+# Mediana
+mediana<- c(median(X1), median(X2))
+# Cuartile 1: 25%
+q1 <- c(quantile(X1,0.25), quantile(X2,0.25))
+# Cuartile 2: 50% = Mediana
+q2 <- c(quantile(X1,0.5), quantile(X2,0.5))
+# Cuartile 3: 75%
+q3 <- c(quantile(X1,0.75), quantile(X2,0.75))
+# Rango Intercuartile 
+ric <- c(IQR(X1), IQR(X2))
+# Varianza 
+varianza <- c(var(X1), var(X2))
+# Desviación estándar
+stad <- c(sd(X1), sd(X2))
+# Coeficiente de variación
+coef_var <-  stad/media 
+```
+
+
+Guardamos los datos en un array 
+
+```{r echo=TRUE}
+# Unimos los valores obtenidos
+estadisticos <- cbind(round(q1, digits = 4), round(media, digits=4),
+                      round(mediana,digits=4), round(q2, digits=4),
+                      round(ric, digits=4), round(q3, digits=4),
+                      round(varianza, digits=4), round(stad, digits=4),
+                      round(coef_var, digits=4))
+# Definimos los nombres de las columnas y filas
+rownames(estadisticos) <- c("X1", "X2") 
+colnames(estadisticos) <- c("25%", "Media", "Mediana", "50%","75%", "RIC",
+                            "Varianza", "Desv. Estándar","Coef. variación")
+# Mostramos el arreglo
+estadisticos
+```
+
+
+### Elabora diagramas de caja para cada conjunto de datos
+
+```{r label="hist_x1_x2", fig.cap="Diagrama de caja para las variables X1 y X2", fig.subcap="Fuente: Elaboración Propia", echo=FALSE}
+
+boxplot(X1,X2, main = "Boxplot de la variables X1 y X2", ylab="Frecuencias", 
+        names = c("X1","X2"), col=c("yellow","brown"))
+
+```
+
+
+# Intervalo de confianza del $97\%$ para la media
+
+Por los histogramas obtenidos en  \ref{hist_x1_x2}, se puede suponer que la variables `X1` y `X2` siguen alguna de las siguientes distribuciones de probabilidad: Poisson, Normal, Gamma y Chi-Cuadrado. 
+
+Para comprobar cual de estas funciones se ajusta mejor a las variables se utiliza la función `fitdistr` de la librería `MASS`. Que calcula los parámetros de las distribuciones seleccionadas que hacen mímina la varianza entre los datos reales y los estimados utilizando tales parámetros.
+
+```{r}
+library(MASS) # Cargamos la libreria
+```
+
+\newpage 
+
+### Para X1
+
+```{r}
+pois_fit_1 = fitdistr(X1,"poisson")
+pois_fit_1
+chi_fit_1 = fitdistr(X1,"chi-squared",start=list(df=1))
+chi_fit_1
+norm_fit_1 = fitdistr(X1,"normal")
+norm_fit_1
+gam_fit_1= fitdistr(X1,"gamma")
+gam_fit_1
+```
+Con estos estimadores, se crean $8$ simulaciones por cada cada distribución y se escoge aquella que mejor se ajuste a los datos al comparar los histogramas con la variable objetivo: 
+
+
+```{r}
+# Se fija el seed para que se repliquen los datos en cada ejecución
+set.seed(777)
+sim_pois <- matrix(nrow = 8, ncol = 100) # Simulaciones con poisson
+sim_chi <- matrix(nrow = 8, ncol = 100)  # Simulaciones con chi-cuadrado
+sim_norm <- matrix(nrow = 8, ncol = 100) # Simulaciones con normal 
+sim_gam <- matrix(nrow = 8, ncol = 100)  # Simulaciones con gamma
+
+# Se realizan las simulaciones en un loop for
+for(i in 1:8){
+  #Para poisson
+  sim_pois[i,]=rpois(n = 100, lambda = pois_fit_1$estimate)
+  #Para chi-cuadrada
+  sim_chi[i,]=rchisq(n=100,df=chi_fit_1$estimate)
+  #Para normal
+  sim_norm[i,]=rnorm(n=100,mean=norm_fit_1$estimate[1],sd=norm_fit_1$estimate[2])
+  #Para gamma
+  sim_gam[i,]=rgamma(n=100,shape = gam_fit_1$estimate[1],rate=gam_fit_1$estimate[2])
+}  
+```
+
+Se comparan los histogramas de las simulaciones y el original
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Poisson.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X1, main = "Histograma de la variable X1", ylab = "Frecuencia", xlab = "X1", 
+     col="yellow")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_pois[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="orange")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Chi-Cuadrado.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X1, main = "Histograma de la variable X1", ylab = "Frecuencia", xlab = "X1", 
+     col="yellow")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_chi[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="orange")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Normal.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X1, main = "Histograma de la variable X1", ylab = "Frecuencia", xlab = "X1", 
+     col="yellow")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_norm[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="orange")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Gamma.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X1, main = "Histograma de la variable X1", ylab = "Frecuencia", xlab = "X1", 
+     col="yellow")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_gam[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="orange")
+}
+```
+
+De estas simulaciones se pudo concluir que la distribución que mejor se adapta a los datos originales de la variable `X1`, es la distribución normal con media, $\mu=0.280$ y desviación estándar, $\sigma=0.044$.
+
+\vfill
+
+\newpage 
+
+### Para X2
+
+```{r}
+pois_fit_2 = fitdistr(X2,"poisson")
+pois_fit_2
+chi_fit_2 = fitdistr(X2,"chi-squared",start=list(df=1))
+chi_fit_2
+norm_fit_2 = fitdistr(X2,"normal")
+norm_fit_2
+gam_fit_2= fitdistr(X2,"gamma")
+gam_fit_2
+```
+Se crearon $8$ simulaciones por cada cada distribución y se escoge la que mejor se ajuste a los datos al comparar los histogramas
+
+
+```{r}
+# Se fija el seed para que se repliquen los datos en cada ejecución
+set.seed(777)
+sim_pois_2 <- matrix(nrow = 8, ncol = 100) # Simulaciones con poisson
+sim_chi_2 <- matrix(nrow = 8, ncol = 100)  # Simulaciones con chi-cuadrado
+sim_norm_2 <- matrix(nrow = 8, ncol = 100) # Simulaciones con normal 
+sim_gam_2 <- matrix(nrow = 8, ncol = 100)  # Simulaciones con gamma
+
+# Se realizan las simulaciones en un loop for
+for(i in 1:8){
+  #Para poisson
+  sim_pois_2[i,]=rpois(n = 100, lambda = pois_fit_2$estimate)
+  #Para chi-cuadrada
+  sim_chi_2[i,]=rchisq(n=100,df=chi_fit_2$estimate)
+  #Para normal
+  sim_norm_2[i,]=rnorm(n=100,mean=norm_fit_2$estimate[1],sd=norm_fit_2$estimate[2])
+  #Para gamma
+  sim_gam_2[i,]=rgamma(n=100,shape = gam_fit_2$estimate[1],rate=gam_fit_2$estimate[2])
+}  
+```
+
+Se comparan los histogramas de las simulaciones y el original
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Poisson.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", xlab = "X2", 
+     col="brown")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_pois_2[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="blue")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Chi-Cuadrado.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", xlab = "X2", 
+     col="Brown")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_chi_2[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="blue")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Normal.", echo=FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", xlab = "X2", 
+     col="Brown")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_norm_2[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="blue")
+}
+```
+
+```{r fig.cap="Comparación valores originales con 8 imulaciones de una distribución Gamma.", echo = FALSE}
+par(mfrow=c(3,3))
+# Histograma valores reales
+hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", xlab = "X2", 
+     col="Brown")
+for (i in 1:8) {
+  # Histograma valores simulados
+  hist(sim_gam_2[i,], main = paste("Simulación ",i), xlab = "", ylab = "Frecuencia",
+       col="blue")
+}
+```
+
+\newpage
+
+De estas simulaciones se pudo concluir que la distribución que mejor se adapta a los datos originales de la variable `X2`, es la distribución normal con media, $\mu=0.151$ y desviación estándar, $\sigma=0.042$. 
+
+Con estos resultados es posible calcular un intervalo de confiaza para la media de la siguiente manera: 
+
+```{r}
+# Intervalo de confianza para una muestra grande (mayor a 30) de X1
+t.test( X1, conf.level = 0.97 )$conf.int
+```
+
+Note que el valor obtenido por los estimadores coincide con el intervalo de confianza pues $0.280\in ( 0.2658, 0.2952)$. 
+
+```{r}
+# Intervalo de confianza para una muestra grande (mayor a 30) de X2
+t.test( X2, conf.level = 0.97 )$conf.int
+```
+
+Note que el valor obtenido por los estimadores coinicide con el intervalo de confianza pues  $0.151\in (0.1368, 0.1649)$.
+
+
+
+
+
+
