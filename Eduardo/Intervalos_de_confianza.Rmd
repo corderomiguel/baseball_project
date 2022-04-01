@@ -1,0 +1,80 @@
+---
+title: "Intervalos de Confianza"
+author: "Eduardo Gavazut, 13-10524"
+date: "3/31/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cargar la base de datos
+
+```{r}
+library(readxl)
+Baseball <- read_excel("../../Baseball.xlsx")
+head(Baseball)
+```
+
+## Calcular la media para las variables X3 y X4
+
+Utilicemos la función t.test() para encontrar el intervalo para las variables buscadas:
+
+```{r}
+# Primero, calculemos el intervalo de confianza para cada variable, y guardemos los límites
+# superiores e inferiores en un data.frame, al igual que los promedios. Esto con el objetivo
+# de hacer una visualización en el siguiente bloque de código
+
+X1 <- Baseball$X1
+X2 <- Baseball$X2
+X3 <- Baseball$X3
+X4 <- Baseball$X4
+X5 <- Baseball$X5
+X6 <- Baseball$X6
+
+conf1 <- t.test(X1, conf.level = 0.97)$conf.int
+conf2 <- t.test(X2, conf.level = 0.97)$conf.int
+conf3 <- t.test(X3, conf.level = 0.97)$conf.int
+conf4 <- t.test(X4, conf.level = 0.97)$conf.int
+conf5 <- t.test(X5, conf.level = 0.97)$conf.int
+conf6 <- t.test(X6, conf.level = 0.97)$conf.int
+
+conf1
+conf2
+conf3
+conf4
+conf5
+conf6
+
+li <- c(conf1[1], conf2[1], conf3[1], conf4[1], conf5[1], conf6[1])
+ls <- c(conf1[2], conf2[2], conf3[2], conf4[2], conf5[2], conf6[2])
+promedios <- colMeans(Baseball)
+Variables <- c("Tasa de bateo", "Carreras anotadas", "Dobles", "Triples", "Jonrones", "Ponches")
+
+dt <- data.frame(Promedios=promedios, Limite_Inferior=li, Limite_Superior=ls)
+```
+Vemos que para cada variable, los intervalos de confianza son
+
+\begin{enumerate}
+  \item Tasa de bateo (hits/veces al bate): $(0.2657556, 0.2951778)$.
+  \item Carreras anotadas (por veces al bate): $(0.1368441, 0.1649337)$.
+  \item Dobles (por veces al bate): $(0.04286130, 0.04984981)$.
+  \item Triples (por veces al bate): $(0.008962058, 0.013615720)$.
+  \item Jonrones (por veces al bate): $(0.01682441, 0.03170892)$.
+  \item Ponches (por veces al bate): $(0.08325165, 0.12541501)$.
+\end{enumerate}
+
+Ahora, para visualizar un poco mejor estos intervalos, pasemos a graficarlos con ayuda de la librería ggplot2:
+
+```{r}
+library(ggplot2)
+
+conf_graf <- ggplot(dt) +
+  geom_errorbar(aes(x=Variables, ymin=li, ymax=ls), width=0.4, color="blue") +
+  geom_point(aes(x=Variables, y=means), color="blue")
+
+conf_graf
+```
+
+Vemos que en general, los los intervalos de confianza más estrechos son los de dobles y triples, lo que nos indica que en general, con una probabilidad del 97%, podemos asegurar que los jugadores de la MLB tendrán un promedio de triples y dobles que puede ser estimado con bastante certeza, pero vemos que las carreras anotadas, los ponches y la tasa de bateo tienen un intervalo de confianza mucho más grande, por lo que no podemos asegurar que el promedio será estimado de forma tan certera.
