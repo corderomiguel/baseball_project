@@ -72,7 +72,7 @@ library(ggplot2)
 
 conf_graf <- ggplot(dt) +
   geom_errorbar(aes(x=Variables, ymin=li, ymax=ls), width=0.4, color="blue") +
-  geom_point(aes(x=Variables, y=means), color="blue")
+  geom_point(aes(x=Variables, y=promedios), color="blue")
 
 conf_graf
 ```
