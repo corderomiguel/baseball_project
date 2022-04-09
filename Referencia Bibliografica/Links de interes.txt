@@ -1,0 +1,31 @@
+Referencias: 
+
+	• Bookdown: https://bookdown.org/yihui/rmarkdown/pdf-document.html#data-frame-printing-1
+	• Guia de latex: https://cristiancastrop.files.wordpress.com/2013/04/latex_febrero_2012_composicion_disenoeditorial_graficos_inkscape_tikz_beamer.pdf
+	• Articulo de regresion lineal: https://rpubs.com/joser/RegresionSimple
+	• Correlacion lineal y regresion lineal simple: https://www.cienciadedatos.net/documentos/24_correlacion_y_regresion_lineal#Informaci%C3%B3n_sesi%C3%B3n
+	• Template: 
+	install.packages("stevetemplates")
+	• Journal de R
+		○ https://journal.r-project.org/archive/2021/RJ-2021-081/index.html
+		○ https://journal.r-project.org/archive/2021/RJ-2021-092/index.html
+		○ https://journal.r-project.org/archive/2021/RJ-2021-099/index.html
+		○ https://journal.r-project.org/archive/2021/RJ-2021-074/index.html
+		
+	• Pagina de tutoriales https://r-coder.com/inicio/
+	• Articulos sobre analisis de beisbol
+		○ https://baseballwithr.wordpress.com/
+		○ https://web.colby.edu/baseball/baseball-analytics-with-r/
+			§ https://web.colby.edu/baseball/files/2016/02/Statistical-Analysis-of-Hitting-Streaks-Albright-1.pdf
+			§ https://web.colby.edu/baseball/files/2016/02/Hitting-is-Contagious-in-Baseball-Bock-et-al.pdf
+		○ https://statsbylopez.files.wordpress.com/2016/01/lab1.pdf
+		○ https://rpubs.com/marcelo_tibau/exploratory-and-baseball
+		○ http://openaccess.uoc.edu/webapps/o2/bitstream/10609/98686/6/abenavideseTFM0619memoria.pdf
+		○ https://rstudio-pubs-static.s3.amazonaws.com/441798_7ffc3a6060634f339f47a3d2fdc06e27.html
+		○ https://rstudio-pubs-static.s3.amazonaws.com/458464_993172e6aa3742e088eb86cc1b818eec.html
+		○ http://facweb1.redlands.edu/fac/jim_bentley/Downloads/R/TSUBUsingR.html
+		○ https://rpubs.com/Money/equipomoneyball
+		○ https://es.r4ds.hadley.nz/transform.html
+
+Documento en PDF
+
