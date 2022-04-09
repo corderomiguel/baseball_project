@@ -1,0 +1,63 @@
+---
+title: Análisis estadístico sobre una base de datos de beísbol.
+authors:
+  - name: Eduardo Gavazut
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 13-10524@usb.ve
+  - name: Luis Riera
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email:  16-10976@usb.ve
+  - name: Miguel Cordero
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 15-10326@usb.ve
+date: 8 de abril de 2022
+abstract: >
+  En este documento se realiza un prueba de hipótesis sobre la variable X2 o tasa de bateo para determinar si el promedio es menor que 0.3 .
+keywords: "Prueba de hipótesis, tasa de bateo, variable X2"
+bibliography: referencias.bib
+output: 
+  pdf_document:
+    template: template.tex
+    keep_tex: true
+  html_document: default
+---
+
+```{r include= FALSE}
+# Inicializamos la librería que permite leer archivos xlsx
+library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("~/GitHub/data/Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+```{r include=FALSE}
+X1<- Baseball$X1
+```
+
+# Pruebas sobre la tasa de bateo
+
+Se desea probar con un nivel de significancia de $\alpha=0.05$, que el promedio de bateo es inferior a $0.300$. 
+
+Como hipótesis nula $H_{0}$, supongamos que la media de bateo, $\overline{X1}$, es igual a $0.3$. Y como hipótesis alternativa, $H_{a}$, que el promedio de bateo es superior a $0.3$, $\overline{X1}>0.3$. 
+
+Suponiendo que los datos presentan una distribución normal, podemos aplicar el comando `t.test`.
+
+```{r eval=FALSE, echo=FALSE}
+t.test(X1, alternative = "greater", mu=0.3, conf.level = 0.95)
+```
+Con este función, se obtuvo que el valor para el estadístico $t$ es $-23.811$, con $44$ grados libertad. Como el $p-valor$ es bastante alto, de hecho es igual $0,9976$ (que representa un $99.76\%$), se cumple que $\alpha=0.05<99.76$ y por lo tanto la hipótesis alternativa se rechaza, mas aún, se rechaza para todo nivel de significancia porque se necesita un valor para $\alpha$ más alto que el $p-valor$ para rechazar la hipótesis nula.
+
+Se afirma entonces, con total seguridad, que la tasa de bateo es inferior a $0.300$. 
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Plantilla del Team para el proyecto final 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Nueva clase personalizada
+\documentclass{staprojteamusb}
+%%%%%%%%%% Nuevo estilo personalizado
+\usepackage{staprojteamusbsty}
+
+\addbibresource{referencias.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Variables de Markdown
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Encabezado 
+\titulo{Análisis estadístico sobre una base de datos de beísbol.}
+
+\autor{
+		Eduardo Gavazut\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:13-10524@usb.ve}{\nolinkurl{13-10524@usb.ve}}} \\
+	 \And
+		Luis Riera\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:16-10976@usb.ve}{\nolinkurl{16-10976@usb.ve}}} \\
+	 \And
+		Miguel Cordero\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:15-10326@usb.ve}{\nolinkurl{15-10326@usb.ve}}} \\
+	}
+\fecha{8 de abril de 2022}
+\resumen{En este documento se realiza un prueba de hipótesis sobre la
+variable X2 o tasa de bateo para determinar si el promedio es menor que
+0.3 .}
+
+\palabrasc{Prueba de hipótesis, tasa de bateo, variable X2}
+%%%%%%%%%%%% Resto de las variables propias de R eso viene por defecto de R
+
+
+%%%%%%%%% Estilo de las listas sin salto de linea
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+%%%%%%%%%%%% Si hay paquetes por incluir en header-include
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+	
+	
+	\maketitle
+	
+	%%%%%%%%%%%% Si hay cosas que incluir en include-before
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	%%%%%%%%%%%%% Inicio del documento
+	
+	\hypertarget{pruebas-sobre-la-tasa-de-bateo}{%
+ \section{Pruebas sobre la tasa de
+ bateo}\label{pruebas-sobre-la-tasa-de-bateo}}
+
+ Se desea probar con un nivel de significancia de \(\alpha=0.05\), que
+ el promedio de bateo es inferior a \(0.300\).
+
+ Como hipótesis nula \(H_{0}\), supongamos que la media de bateo,
+ \(\overline{X1}\), es igual a \(0.3\). Y como hipótesis alternativa,
+ \(H_{a}\), que el promedio de bateo es superior a \(0.3\),
+ \(\overline{X1}>0.3\).
+
+ Suponiendo que los datos presentan una distribución normal, podemos
+ aplicar el comando \texttt{t.test}.
+
+ Con este función, se obtuvo que el valor para el estadístico \(t\) es
+ \(-23.811\), con \(44\) grados libertad. Como el \(p-valor\) es
+ bastante alto, de hecho es igual \(0,9976\) (que representa un
+ \(99.76\%\)), se cumple que \(\alpha=0.05<99.76\) y por lo tanto la
+ hipótesis alternativa se rechaza, mas aún, se rechaza para todo nivel
+ de significancia porque se necesita un valor para \(\alpha\) más alto
+ que el \(p-valor\) para rechazar la hipótesis nula.
+
+ Se afirma entonces, con total seguridad, que la tasa de bateo es
+ inferior a \(0.300\).
+	
+	%%%%%%%%%%%%% Fin del documento
+	
+	%%%%%%%%%%%% Inicio de la bibliografia
+	
+	\printbibliography
+	
+	
+	%%%%%%%%%%%%% Fin de la bibliografia
+	
+	%%%%%%%%%%%%%%%%% Si hay cosas que incluir en include-after
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+\end{document}
