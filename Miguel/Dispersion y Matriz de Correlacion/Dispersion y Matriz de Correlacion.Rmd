@@ -1,0 +1,92 @@
+---
+title: Análisis estadístico sobre una base de datos de beísbol.
+authors:
+  - name: Eduardo Gavazut
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 13-10524@usb.ve
+  - name: Luis Riera
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email:  16-10976@usb.ve
+  - name: Miguel Cordero
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 15-10326@usb.ve
+date: 8 de abril de 2022
+abstract: >
+  En este documente se muestran los gráficos de dispersión, y matriz de correlación entre cada una de las variables.
+  Aún se está desarrollando
+keywords: "Proyecto, Estadistica, Rstudio, Beisbol, Dispersión, Correlación"
+bibliography: referencias.bib
+output: 
+  pdf_document:
+    template: template.tex
+    keep_tex: true
+  html_document: default
+---
+
+
+```{r include= FALSE}
+# Inicializamos la librería que permite leer archivos xlsx
+library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("~/GitHub/data/Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+```{r include=FALSE}
+X1<- Baseball$X1
+X2<- Baseball$X2
+X3<- Baseball$X3
+X4<- Baseball$X4
+X5<- Baseball$X5
+X6<- Baseball$X6
+```
+
+## Gráficos de dispersión
+
+```{r echo=FALSE}
+variables <- rbind( X1, X2, X3, X4, X5, X6)
+nombres <- c("Tasa de Bateo", "Tasa de Carreras Anotadas", "Tasa de Dobles", 
+             "Tasa de Triples", "Tasa de Jonrones", "Tasa de ponches")
+simbolos <- c("X1", "X2", "X3", "X4", "X5", "X6")
+par(mfrow=c(2,3))
+for( i in 1:6){
+  plot(variables[i,], main=nombres[i], xlab="", ylab=simbolos[i])
+}
+
+```
+
+
+## Matriz de Correlación: 
+
+```{r echo=FALSE}
+## Codigo de R-coder https://r-coder.com/grafico-correlacion-r/
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...) {
+    usr <- par("usr")
+    on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    Cor <- abs(cor(x, y)) # Elimina la función abs si lo prefieres
+    txt <- paste0(prefix, format(c(Cor, 0.123456789), digits = digits)[1])
+    if(missing(cex.cor)) {
+        cex.cor <- 0.4 / strwidth(txt)
+    }
+    text(0.5, 0.5, txt,
+         cex = 1 + cex.cor * Cor) # Escala el texto al nivel de correlación
+}
+grupos<- Baseball[1,]
+# Dibujamos la matriz de correlación
+pairs(Baseball,
+      upper.panel = panel.cor,    # Panel de correlación
+      col = c("Orange","Brown"),            # Colores de los puntos
+      bg = c("Orange","Brown"),            # Colores de los puntos
+      pch = 21,                   # Símbolo pch
+      main = "Matriz de Correlación de las variables",  # Titulo
+      cex.labels = NULL,        # Tamaño del texto de la diagonal
+      font.labels = 1          # Estilo de fuente del texto de la diagonal
+)
+```
+
+
