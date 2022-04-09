@@ -1,0 +1,152 @@
+---
+title: Análisis estadístico sobre una base de datos de beísbol.
+authors:
+  - name: Eduardo Gavazut
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 13-10524@usb.ve
+  - name: Luis Riera
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email:  16-10976@usb.ve
+  - name: Miguel Cordero
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 15-10326@usb.ve
+date: 8 de abril de 2022
+abstract: >
+  En este documento se trata la descripción de los datos, la clase de la base de datos y los estadísticos para las variables 
+bibliography: referencias.bib
+output: 
+  pdf_document:
+    template: template.tex
+    keep_tex: true
+  html_notebook: default
+---
+
+# Planteamiento del problema 
+
+Se desea realizar un análisis estadístico completo sobre una base de datos con información sobre el rendimiento de algunos jugadores de beisbol y en particular estudiar la relación (si la hay) de los hits al bate respecto a las carreras, dobles, triples, jonrones y ponches de los jugadores. 
+
+## Metododología
+
+Para la realización de esta investigación se hará uso del sofware estadístico `R` en el entorno de desarrollo intergrado (IDE) `RStudio`. En este se iniciará por una descripción de los datos y variables almacenadas en el archivo fuente *Baseball.xlsx*, tales como: mínimo, media, cuantiles y desviación estándar. Para la media de las variables se obtendrá un intervalo de confianza del $95\%$. Como se desea estudiar la relación de la tasa de bateo respecto al resto de las variables, se buscará determinar la mejor distribución de probabilidad que se ajuste a esta variable. Finalmente, se estudiará la eficiencia del mejor modelo lineal de predicción que se ajuste a los datos y permita establecer si en efecto existe tal relación entre las variables y las implicaciones que tendría en las estrategias para futuros juegos de beisbol.
+
+# Descripción de los datos 
+
+Para la realización de este proyecto se contó con una archivo de excel con la información de algunos jugadores de la Major League Beisbol o MLB, el cual se almacenó en una variable llamada `Baseball`:  
+
+```{r include= FALSE}
+# Inicializamos la librería que permite leer archivos xlsx
+library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("~/GitHub/data/Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+## Realizar un análisis descriptivo de los datos
+
+### ¿Qué clase es la base de datos?
+
+Con el comando `class`, se pudo determinar el tipo de base de datos utilizada o lo que es equivalente, la clase de la variable `Baseball`.
+
+```{r include=FALSE}
+class(Baseball)
+```
+
+El resultado que se obtuvo indica que es del tipo `tbl_df`, que es una subclase de la clase `data.frame`. `tbl_df` cumple con tener propiedades diferentes por defecto y se suele referir a ellas como `tibble`. Es una clase eficiente para trabajar con bases de datos grandes y su visualización.   
+
+### Variables en la base de datos
+
+```{r include=FALSE}
+str(Baseball)
+```
+
+Si se desea saber que tipo de variables están almacenadas en la base de datos, se puede utilizar el comando `str`. Esta función nos indica que se cuentan con $6$ variables denominadas `X1,X2,X3,X4,X5,X6`, y distribuidas de tal manera que representan la columnas de la base de datos. Cada una de estas variables tienen $45$ valores de tipo `double` o número decimal, que representan las $45$ observaciones aleatorias (una por fila) realizadas a jugadores de la (MLB) . 
+
+Cada variable representa la siguiente información: 
+
+* `X1`: tasa de bateo, (hit/veces al bate).
+* `X2`: tasa de carreras anotadas, (carreras anotadas/veces al bate). 
+* `X3`: tasa de dobles, (dobles/ veces al bate). 
+* `X4`: tasa de triples, (tripes/ veces al bate).
+* `X5`: tasa de jonrones, (jonrones/ veces al bate).
+* `X6`: tasa de ponches, (ponches/ veces al bate). 
+
+### Estadísticos
+
+Para obtener los estadísticos de las seis (6) variables de esta base de datos, se inicia por guardar las $45$ observaciones en un vector que represente a cada variable. 
+
+```{r include=FALSE}
+X1<- Baseball$X1
+X2<- Baseball$X2
+```
+
+Con los datos vectorizados se pueden aplicar las siguientes funciones: `mean` que permite obtener la media de los datos, `median` para obtener la mediana, `quantile` retornar los cuantiles al $0.25\%, 0.50\%$ y $0.75\%$ de cada variable, `min` para el valor mínimo, `max` para el valor máximo, `var` para la varianza, `sd` desviación estándar, `IQR` es para el rango intercuartil y finalmente, el coeficiente de variación obtenido como `stad/media`. 
+
+
+```{r, include=FALSE}
+# Minimo 
+minimo <- c(min(X1),min(X2))
+# Media
+media <- c(mean(X1), mean(X2))
+# Mediana
+mediana<- c(median(X1), median(X2))
+# Cuartile 1: 25%
+q1 <- c(quantile(X1,0.25), quantile(X2,0.25))
+# Cuartile 3: 75%
+q3 <- c(quantile(X1,0.75), quantile(X2,0.75))
+# Maximo 
+maximo <- c(max(X1),max(X2))
+# Rango Intercuartile 
+ric <- c(IQR(X1), IQR(X2))
+# Varianza 
+varianza <- c(var(X1), var(X2))
+# Desviación estándar
+stad <- c(sd(X1), sd(X2))
+# Coeficiente de variación
+coef_var <-  stad/media 
+```
+
+
+Podemos ver la información por cada variable en las siguientes tablas:  
+
+```{r echo=FALSE}
+# Unimos los valores obtenidos
+estadisticos <- cbind(round(minimo, digits=4),round(q1, digits = 4), round(media, digits=4),
+                      round(mediana,digits=4),round(ric, digits=4), round(q3, digits=4),
+                      round(maximo, digits=4),round(varianza, digits=4), round(stad, digits=4),
+                      round(coef_var, digits=4))
+# Definimos los nombres de las columnas y filas
+rownames(estadisticos) <- c("X1", "X2") 
+colnames(estadisticos) <- c("Minimo", "25%", "Media", "Mediana / 50" ,"75%", "Máximo", "RIC",
+                            "Varianza", "Desv. Estándar","Coef. Variación")
+# Mostramos el arreglo
+estadisticos
+```
+De estos resultados hay varios puntos que podemos detacar. La varianza de los datos es muy baja indicativo que entre los datos no hay valores atípicos; la media y la mediana son casi idénticos, de hecho en la tasa de carreras anotadas se puede decir que coinciden, esto  indica que hay cierta simetría en los datos recolectados; sin embargo, la diferencia entre el máximo y el mínimo para la tasa de bateo es casi el doble en comparación con la tasa de carreras anotadas. 
+
+### Diagramas e histograma de los datos por cada variable
+
+```{r echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables X1", echo=FALSE}
+par(mfrow=c(1,2))
+hist(X1, main = "Histograma de la variable X1", ylab = "Frecuencia", xlab = "X1:Tasa de Bateo", 
+     col="Yellow")
+boxplot(X1, main = "Gráfico de Cajas variable X1", 
+        ylab="X1: Tasa de Bateo (hits/veces al bate)", col="Brown ")
+```
+
+De la gráfica para la variable X1 podemos ver como los valores máximos de los datos se obtienen luego de la media, pero el mayor volumen de ellos se encuentra antes como bien se observa en el diagrama de caja que permite confirmar la ausencia de datos atípicos. 
+
+```{r echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables X2", echo=FALSE}
+par(mfrow=c(1,2))
+hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", xlab = "X2:Tasa de carreras anotadas", 
+     col="darkorange")
+boxplot(X2, main = "Gráfico de Cajas variable X2", 
+        ylab="X2: Carreras anotadas (Carreras/veces al bate)", col="darkblue")
+```
+
+De la gráfica para la variable X2 podemos ver la simetría que se infería de la tabla anterior, con respecto al valor $0.15$ que coincide a su vez con la media de los datos. El diagrama de caja permite confirmar la ausencia de los valores atípicos. 
+
+
