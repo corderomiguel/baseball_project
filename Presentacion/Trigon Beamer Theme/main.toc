@@ -1,0 +1,12 @@
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@sectionintoc {2}{Layout}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{Layout variations}{6}{0}{2}
+\beamer@subsectionintoc {2}{2}{Fonts}{7}{0}{2}
+\beamer@sectionintoc {3}{Elements}{8}{0}{3}
+\beamer@subsectionintoc {3}{1}{Charts}{9}{0}{3}
+\beamer@subsectionintoc {3}{2}{Lists}{10}{0}{3}
+\beamer@subsectionintoc {3}{3}{Figures}{11}{0}{3}
+\beamer@subsectionintoc {3}{4}{Tables}{12}{0}{3}
+\beamer@subsectionintoc {3}{5}{Blocks}{13}{0}{3}
+\beamer@subsectionintoc {3}{6}{Frame footer}{14}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{16}{0}{4}
