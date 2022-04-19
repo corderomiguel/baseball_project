@@ -14,15 +14,15 @@
 \titulo{Análisis estadístico sobre una base de datos de beísbol.}
 
 \autor{
-		Eduardo Gavazut\\
-	Universidad Simón Bolívar \\
-	Caracas, Venezuela \\
-	\texttt{\href{mailto:13-10524@usb.ve}{\nolinkurl{13-10524@usb.ve}}} \\
-	 \And
 		Luis Riera\\
 	Universidad Simón Bolívar \\
 	Caracas, Venezuela \\
 	\texttt{\href{mailto:16-10976@usb.ve}{\nolinkurl{16-10976@usb.ve}}} \\
+	 \And
+		Eduardo Gavazut\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:13-10524@usb.ve}{\nolinkurl{13-10524@usb.ve}}} \\
 	 \And
 		Miguel Cordero\\
 	Universidad Simón Bolívar \\
@@ -37,6 +37,47 @@ variable X2 o tasa de bateo para determinar si el promedio es menor que
 \palabrasc{Prueba de hipótesis, tasa de bateo, variable X2}
 %%%%%%%%%%%% Resto de las variables propias de R eso viene por defecto de R
 
+%%%%%%%% Pandoc Estilo  de los codigos
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 %%%%%%%%% Estilo de las listas sin salto de linea
 \providecommand{\tightlist}{%
@@ -69,6 +110,85 @@ variable X2 o tasa de bateo para determinar si el promedio es menor que
 
  Suponiendo que los datos presentan una distribución normal, podemos
  aplicar el comando \texttt{t.test}.
+
+ Con este función, se obtuvo que el valor para el estadístico \(t\) es
+ \(-23.811\), con \(44\) grados libertad. Como el \(p-valor\) es
+ bastante alto, de hecho es igual \(0,9976\) (que representa un
+ \(99.76\%\)), se cumple que \(\alpha=0.05<99.76\) y por lo tanto la
+ hipótesis alternativa se rechaza, mas aún, se rechaza para todo nivel
+ de significancia porque se necesita un valor para \(\alpha\) más alto
+ que el \(p-valor\) para rechazar la hipótesis nula.
+
+ Se afirma entonces, con total seguridad, que la tasa de bateo es
+ inferior a \(0.300\).
+
+ \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Inicializamos la librería que permite leer archivos xlsx}
+\FunctionTok{library}\NormalTok{(readxl)}
+\CommentTok{\# Asignamos a una variable la información almacenada en el archivo}
+\NormalTok{Baseball }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"\textasciitilde{}/GitHub/data/Baseball.xlsx"}\NormalTok{)}
+\CommentTok{\# Mostramos las primeras 5 entradas}
+\FunctionTok{head}\NormalTok{(Baseball, }\AttributeTok{n=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 6
+##      X1    X2    X3    X4    X5    X6
+##   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+## 1 0.283 0.144 0.049 0.012 0.013 0.086
+## 2 0.276 0.125 0.039 0.013 0.002 0.062
+## 3 0.281 0.141 0.045 0.021 0.013 0.074
+## 4 0.328 0.189 0.043 0.001 0.03  0.032
+## 5 0.29  0.161 0.044 0.011 0.07  0.076
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{X1}\OtherTok{\textless{}{-}}\NormalTok{ Baseball}\SpecialCharTok{$}\NormalTok{X1}
+\end{Highlighting}
+\end{Shaded}
+
+ \hypertarget{pruebas-sobre-la-tasa-de-bateo-1}{%
+ \subsection{Pruebas sobre la tasa de
+ bateo}\label{pruebas-sobre-la-tasa-de-bateo-1}}
+
+ Se desea probar con un nivel de significancia de \(\alpha=0.05\), que
+ el promedio de bateo es inferior a \(0.300\).
+
+ Como hipótesis nula \(H_{0}\), supongamos que la media de bateo,
+ \(\overline{X1}\), es igual a \(0.3\). Y como hipótesis alternativa,
+ \(H_{a}\), que el promedio de bateo es superior a \(0.3\),
+ \(\overline{X1}>0.3\).
+
+ Suponiendo que los datos presentan una distribución normal, podemos
+ aplicar el comando \texttt{t.test}.
+
+ \hypertarget{section}{%
+ \subsection{}\label{section}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{t.test}\NormalTok{(X1, }\AttributeTok{alternative =} \StringTok{"greater"}\NormalTok{, }\AttributeTok{mu=}\FloatTok{0.3}\NormalTok{, }\AttributeTok{conf.level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One Sample t-test
+## 
+## data:  X1
+## t = -2.9779, df = 44, p-value = 0.9976
+## alternative hypothesis: true mean is greater than 0.3
+## 95 percent confidence interval:
+##  0.2694453       Inf
+## sample estimates:
+## mean of x 
+## 0.2804667
+\end{verbatim}
 
  Con este función, se obtuvo que el valor para el estadístico \(t\) es
  \(-23.811\), con \(44\) grados libertad. Como el \(p-valor\) es
