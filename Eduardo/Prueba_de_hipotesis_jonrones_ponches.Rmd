@@ -1,0 +1,46 @@
+---
+title: "Descripción de los Datos"
+author: "Eduardo Gavazut, 13-10524"
+date: "3/22/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cargar la base de datos
+
+```{r}
+library(readxl)
+Baseball <- read_excel("~/Documents/Scripts de Estadística/Proyecto/Baseball.xlsx")
+head(Baseball)
+```
+
+Queremos extraer la tasa de jonrones y de ponches al bate, estas variables corresponden a X5 y X6, respectivamente, entonces extraigámoslas de la base de datos
+
+```{r}
+jonrones <- Baseball$X5
+ponches <- Baseball$X6
+```
+
+Ahora, como no tenemos conocimiento acerca de las varianzas poblacionales, usaremos el test de Welch tal y como es explicado en Heumann, Schomaker (2017) para comparar las medias. En este caso, haremos una prueba de hipótesis, donde tomaremos como hipótesis
+
+\[
+H_0 : \mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} = 0 \text{ vs. } H_a : \mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} \neq 0
+\]
+
+es decir, queremos determinar si las tasas de jonrones y ponches son distintas. Ahora, usemos el ```t.test()``` para determinar cuál de estas hipótesis es aceptada:
+
+```{r}
+t.test(jonrones, ponches, alternative='two.sided')
+```
+
+Vemos que el $\operatorname{p-valor}$ es extremadamente pequeño, mucho más que el $\alpha = 0.01$ que es razonable utilizar para nuestra prueba de hipótesis. Adicionalmente, vemos que en el intervalo de confianza no se incluye el cero. Otra cosa que podemos hacer es evaluar el estadístico de prueba con el comando ```qt()``` (vemos por lo anterior que $dt = 55$ y $\alpha = 0.05$):
+
+```{r}
+qt(0.975, 55)
+```
+Como $t=-8$, vemos que el estadístico cae en la región de rechazo (porque es de cola doble).
+
+Para cualquiera de estos casos, podemos concluir que la hipótesis nula se rechaza, es decir que hay suficiente evidencia para creer que $\mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} \neq 0$, además, como el intervalo de confianza es negativo, concluimos que $\mu_{\operatorname{ponches}} > \mu_{\operatorname{jonrones}}$ con un nivel de confianza del $95\%$.

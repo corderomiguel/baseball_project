@@ -18,62 +18,18 @@ Baseball <- read_excel("Baseball.xlsx")
 head(Baseball)
 ```
 
-Se conoce que $X1$ y $X2$ son del tipo double, ahora, obtengamos la información de interés sobre estas variables:
+Queremos extraer la tasa de jonrones y de ponches al bate, estas variables corresponden a X5 y X6, respectivamente, entonces extraigámoslas de la base de datos
 
 ```{r}
-X4 <- Baseball$X3
-X3 <- Baseball$X4
-
-# Mínimo, media, mediana, primer y tercer cuartil y el máximo
-resumen <- c(summary(X3), summary(X4))
-resumen
-
-# Rango Intercuartil
-ric <- c(IQR(X3), IQR(X4))
-
-# Varianza
-varianza <- c(var(X3), var(X4))
-
-# Desviación estándar
-std <- c(sd(X3), sd(X4))
-
-# Coeficiente de varianza
-coef <- std/resumen["Mean"]
+jonrones <- Baseball$X5
+ponches <- Baseball$X6
 ```
 
-Ahora, pasemos a guardar los valores obtenidos en un array:
+Ahora, usaremos el test de Welch tal y como es explicado en Heumann, Schomaker (2017) para comparar las medias. En este caso, haremos una prueba de hipótesis, donde tomaremos como hipótesis
 
-```{r}
-# Agrupemos los valores obtenidos
-estadisticos <- cbind(round(resumen["1st Qu."], digits = 4),
-                      round(resumen["Mean"], digits = 4),
-                      round(resumen["Median"], digits = 4),
-                      round(ric, digits = 4),
-                      round(resumen["3rd Qu."], digits = 4),
-                      round(varianza, digits = 4),
-                      round(std, digits = 4),
-                      round(coef, digits = 4))
+\[
+H_0 : \mu_{\operatorname{jonrones}} = \mu_{\operatorname{ponches}} \text{ vs. } H_a : \mu_{\operatorname{jonrones}} \neq \mu_{\operatorname{ponches}}
+\]
 
-# Coloquemos nombre a las columnas y filas
-rownames(estadisticos) <- c("X3", "X4")
-colnames(estadisticos) <- c("Primer Cuartil", "Media", "Mediana", "Tercer Cuartil",
-                            "Rango Intercuartil", "Varianza", "Desviación estándar",
-                            "Coeficiente de Varianción")
+es decir, queremos determinar si las tasas de jonrones y ponches son distintas. Ahora, usemos el ```t.test()``` para determinar cuál de estas hipótesis es aceptada:
 
-estadisticos
-```
-
-Por último, realicemos el diagrama de caja para $X3$ y $X4$:
-
-```{r}
-par(mfrow = c(1,2))
-boxplot(X3, main = "Dobles por veces al bate", ylab = "Frecuencia", col = "red")
-boxplot(X4, main = "Triples por veces al bate", ylab = "Frecuencia", col = "blue")
-
-hist(X3)
-hist(X4)
-```
-
-Vemos que en general, ambos diagramas de caja son bastante parecidos, con la única diferencia siendo que el de triples está 0.03 puntos corrido hacia arriba y los datos desde el primer cuartil hasta la mediana están muchos más dispersos. Otra diferencia es que el diagrama de cajas para los triples no cuenta con datos atípicos, en cambio los dobles si, que corresponde a 0.3.
-
-Todo esto hace que el diagrama de los triples sea casi simétrico, y el de los dobles sea más chato entre el valor mínimo y la mediana, en comparación con lo que tenemos entre la mediana y el máximo valor.
