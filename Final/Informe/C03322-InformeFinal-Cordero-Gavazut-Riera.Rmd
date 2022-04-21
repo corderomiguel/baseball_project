@@ -179,8 +179,8 @@ Para un análisis mas detallado de como se relacionan las variables entre sí, p
 ### Diagramas e histograma de los datos por cada variable
 
 
-```{r boxplots, echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables", fig.height=5, fig.pos="h!"}
-par(mfrow=c(3,2))
+```{r boxplots, echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables", fig.width=7,fig.asp=2, fig.pos="h!"}
+par(mfrow=c(6,2))
 
 hist(X1, main = "Histograma variable X1", ylab = "Frecuencia", xlab = "X1: Hits al bate", 
    col="Yellow")
@@ -196,12 +196,8 @@ boxplot(X2, main = "Gráfico de Cajas variable X2",
 hist(X3, main = "Histograma de la variable X3", ylab= "Frecuencia", 
      xlab= "X3: Dobles por veces al bate", col="green")
 boxplot(X3, main = "X3: Dobles por veces al bate", ylab = "Frecuencia", col = "red")
-```
 
-
-
-```{r boxplots2, echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables (continuación)", fig.height=5, fig.pos="h!"}
-par(mfrow=c(3,2))
+#par(mfrow=c(3,2))
 hist(X4, main="Histograma de la variable X4", ylab ="Frecuencia", xlab="X4: Triples por veces al bate", 
      col ="limegreen")
 boxplot(X4, main = "Triples por veces al bate", ylab = "Frecuencia", col = "green3")
