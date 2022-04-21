@@ -5,16 +5,12 @@ date: "3/22/2022"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Cargar la base de datos
 
 ```{r}
-install.packages('readxl')
+#install.packages('readxl')
 library(readxl)
-Baseball <- read_excel("Baseball.xlsx")
+Baseball <- read_excel("../data/Baseball.xlsx")
 head(Baseball)
 ```
 
