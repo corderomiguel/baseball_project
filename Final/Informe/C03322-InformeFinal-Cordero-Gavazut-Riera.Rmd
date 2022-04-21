@@ -40,7 +40,7 @@ Para la realización de este proyecto se contó con una archivo de excel con la 
 # Inicializamos la librería que permite leer archivos xlsx
 library(readxl)
 # Asignamos a una variable la información almacenada en el archivo
-Baseball <- read_excel("~/GitHub/data/Baseball.xlsx")
+Baseball <- read_excel("../../data/Baseball.xlsx")
 # Mostramos las primeras 5 entradas
 head(Baseball, n=5)
 ```
