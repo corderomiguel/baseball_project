@@ -1,0 +1,99 @@
+---
+title: "prueba de bondad de ajuste X1"
+author: "Luis Riera"
+date: "20 de abril de 2022"
+output: pdf_document
+---
+
+```{r}
+# Inicializamos la librería que permite leer archivos xlsx
+library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+```{r}
+X1<-Baseball$X1
+X1
+```
+
+ calculemos la media y la desviacion estandar 
+```{r}
+library(MASS)
+fitdistr(X1,"normal")
+```
+
+ahora el estadistico 
+
+```{r}
+#main = "Histograma variable X1", ylab = "Frecuencia", xlab = "X1: Hits al bate", 
+#   col="Yellow",
+hist(X1, plot=F)
+```
+ 
+partiremos los datos en varias categorias: 
+
+primeras dos (suman 6)
+segundas dos (suman 9)
+terceras dos (suman 13)
+cuerto (10)
+ultimas tres ( suman 7)
+
+```{r}
+fi<-c(6,9,13,10,7)
+qqnorm(fi)
+qqline(fi)
+```
+
+
+```{r}
+# Tamaño de los fi
+k<- length(fi)
+```
+
+```{r}
+n<- sum(fi)
+```
+
+calculemos los E(n_i)
+
+```{r}
+(p1<-pnorm(0.22,0.2805,0.0435)-pnorm(0.18,0.2805,0.0435))
+(p2<-pnorm(0.26,0.2805,0.0435)-pnorm(0.22,0.2805,0.0435))
+(p3<-pnorm(0.30,0.2805,0.0435)-pnorm(0.26,0.2805,0.0435))
+(p4<-pnorm(0.32,0.2805,0.0435)-pnorm(0.30,0.2805,0.0435))
+(p5<-pnorm(0.38,0.2805,0.0435)-pnorm(0.32,0.2805,0.0435))
+
+
+ei<-c(n*p1,n*p2,n*p3,n*p4,n*p5)
+```
+
+```{r}
+(t<-sum(((fi-ei)^{2})/ei))
+```
+
+```{r}
+# p-valor
+(p_Valor<- 1-pchisq(t,2))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
