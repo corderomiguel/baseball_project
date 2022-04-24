@@ -1,0 +1,93 @@
+---
+title: Análisis estadístico sobre una base de datos de beísbol.
+authors:
+  - name: Miguel Cordero
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 15-10326@usb.ve
+  - name: Eduardo Gavazut
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 13-10524@usb.ve
+  - name: Luis Riera
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email:  16-10976@usb.ve  
+date: 8 de abril de 2022
+abstract: >
+  Este es un ejemplo de plantilla generado en RStudio para mostrar como se vería el proyecto final. Se realizarán una serie de análisis cuantitativos y cualitativos sobre una base de datos de beísbol. Se exponen los resultados y algunas conclusiones que se pueden extraer de los mismos. Cualquier error puede ser notificado para su corrección final. ESTO NO ES UN RESUMEN, se los estoy diciendo literal XD.
+keywords: "Proyecto, Estadistica, Rstudio, Beisbol"
+bibliography: referencias.bib
+output: 
+  bookdown::pdf_document2:
+    template: template.tex
+    keep_tex: true
+  html_document: default
+---
+
+```{r warning=FALSE, include=FALSE}
+# Inicializamos la librería que permite leer archivos xlsx
+library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("../../data/Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+# ANOVA para la Tasa de Bateo
+
+Para realizar el analiza de varianza sobre la variable `X1` O la tasa de bateo. Primero dividimos los datos en 3 grupos: 
+
+* Grupo 1: los bateadores con una tasa de bateo igual a $(X1<0.200)$. 
+* Grupo 2: los bateadores con una tasa de bateo igual a $(0.200\leq X1 < 0.300)$. 
+* Grupo 3: los bateadores con una tasa de bateo igual a $(0.300\leq X1)$
+
+Con esta agrupación se decidió por considerar un análisis de varianza con bloques aleatorizados donde los bloques serán los grupos y los tratamientos o métodos las distintas variables de la base de datos. 
+
+Con la tabla \@ref(tab:preANOVA) podemos apreciar las medias de los valores agrupados.Con esto valores, se puede aplicar el comando `anova` de `R` para obtener la tabla ANDEVA detallada en la tabla \@ref(tab:andeva), donde se obtiene que el p-valor para lo grupos es de $0.6198$ que es alto, indicando que la hipótesis nula para los grupos no se puede rechazar por lo que las medias por grupos son iguales. Sin embargo, para las medias por variable o  método se obtuvo un p-valor de $0.0004$ que es bastante bajo, incluso significativo indicando que las medias son distintas tal como se esperaba por los datos analizados. 
+
+Con esto podemos afirmar que los promedios de las tasas de las otras variables son iguales por cada grupo. 
+ 
+ 
+
+```{r warning=FALSE, include=FALSE}
+grupo1<- subset(Baseball, (X1<0.200) )
+grupo2<- subset(Baseball, (X1 >= 0.200 & X1 <=0.300))
+grupo3<- subset(Baseball, (X1>=0.300))
+
+media1<- colMeans(grupo1[sapply(grupo1, is.numeric)]) 
+media2<- colMeans(grupo2[sapply(grupo1, is.numeric)])
+media3<- colMeans(grupo3[sapply(grupo1, is.numeric)])
+
+medias <- rbind(media1,media2,media3)
+
+datos<- c(medias[,1] , medias[,2], medias[,3],medias[,4],medias[,5],medias[,6])
+
+variables <- gl(6,3, labels=c("X1","X2","X3","X4","X5","X6"))
+grupos = factor(rep(1:3,6), labels=c("Grupo1","Grupo2","Grupo3"))
+xtabs(datos~grupos+variables )
+```
+ 
+```{r preANOVA, echo=FALSE, warning=FALSE, fig.pos="h!"}
+library(knitr)
+library(kableExtra)
+
+kable(xtabs(datos~grupos+variables ),caption = "Tabla a dos factores para las medias de las variables") %>%
+  kable_styling(latex_options ="scale_down")
+```
+
+```{r warning=FALSE, include=FALSE}
+# Una variables 
+modelo.lineal = lm(datos~variables)
+anova(modelo.lineal)
+
+# Dos variables
+modelo.lineal2 = lm(datos~grupos+variables)
+prueba<-anova(modelo.lineal2)
+```
+
+
+```{r andeva, echo=FALSE, warning=FALSE}
+kable(prueba,caption = "Tabla a dos factores para las medias de las variables") %>%
+  kable_styling(latex_options ="scale_down")
+```

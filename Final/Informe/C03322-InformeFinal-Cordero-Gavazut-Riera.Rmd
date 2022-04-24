@@ -174,49 +174,50 @@ Una consecuencia de la baja varianza es que la media y la mediana son valores mu
 
 Para un análisis mas detallado de como se relacionan las variables entre sí, podemos analizar los histogramas junto a los gráficos de cajas y bigotes. 
 
-\vspace{10mm}
-
 ### Diagramas e histograma de los datos por cada variable
 
-
-```{r boxplots, echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables", fig.width=7,fig.asp=2, fig.pos="h!"}
-par(mfrow=c(6,2))
-
-hist(X1, main = "Histograma variable X1", ylab = "Frecuencia", xlab = "X1: Hits al bate", 
-   col="Yellow")
-boxplot(X1, main = "Gráfico de Cajas variable X1", ylab="X1: Hits por veces al bate", 
-        col="Brown ")
-
-hist(X2, main = "Histograma de la variable X2", ylab = "Frecuencia", 
-     xlab = "X2: Carreras anotadas por veces al bate", col="darkorange")
-
-boxplot(X2, main = "Gráfico de Cajas variable X2", 
-      ylab="X2: Carreras por veces al bate", col="darkblue")
-
-hist(X3, main = "Histograma de la variable X3", ylab= "Frecuencia", 
-     xlab= "X3: Dobles por veces al bate", col="green")
-boxplot(X3, main = "X3: Dobles por veces al bate", ylab = "Frecuencia", col = "red")
-
-#par(mfrow=c(3,2))
-hist(X4, main="Histograma de la variable X4", ylab ="Frecuencia", xlab="X4: Triples por veces al bate", 
-     col ="limegreen")
-boxplot(X4, main = "Triples por veces al bate", ylab = "Frecuencia", col = "green3")
-
-hist(X5, main = "Histograma de la variable X5", ylab = "Frecuencia", xlab = "X5: Jonrones por veces al bate", 
-     col="Yellow")
-boxplot(X5, main = "Gráfico de Cajas variable X5",ylab="X5: Jonrones por veces al bate ", col="Brown ")
-
-hist(X6, main = "Histograma de la variable X6", ylab = "Frecuencia", xlab = "X6: Ponches por veces al bate", 
-     col="darkorange")
-boxplot(X6, main = "Gráfico de Cajas variable X6", 
-        ylab="X6: Ponches por veces al bate", col="darkblue")
-```
-
-De la figura \@ref(fig:boxplots) y la figura \@ref(fig:boxplots2), podemos establecer: para la variable `X1`, que los valores máximos de los datos se obtienen luego de la media, pero el mayor volumen de ellos se encuentra antes como bien se observa en el diagrama de caja que permite confirmar, además, la ausencia de datos atípicos. Para la variable `X2`,  se puede comprobar que  ver simetría de los datos que se infería de la tabla \@ref(tab:resumem), particularmente respecto al valor $0.15$ que coincide a su vez con la media de los datos. El diagrama de caja permite confirmar la ausencia de los valores atípicos.  
+De la figura \@ref(fig:boxplots), podemos establecer: para la variable `X1`, que los valores máximos de los datos se obtienen luego de la media, pero el mayor volumen de ellos se encuentra antes como bien se observa en el diagrama de caja que permite confirmar, además, la ausencia de datos atípicos. Para la variable `X2`,  se puede comprobar que  ver simetría de los datos que se infería de la tabla \@ref(tab:resumem), particularmente respecto al valor $0.15$ que coincide a su vez con la media de los datos. El diagrama de caja permite confirmar la ausencia de los valores atípicos.  
 
 Por su parte, para la variable `X3` y `X4`, Vemos que en general, ambos diagramas de caja son bastante parecidos, con la única diferencia siendo que el de triples está $0.03$ puntos corrido hacia arriba y los datos desde el primer cuartil hasta la mediana están muchos más dispersos. Otra diferencia es que el diagrama de cajas para los triples no cuenta con datos atípicos, en cambio los dobles si, que corresponde a $0.3$. Todo esto hace que el diagrama de los triples sea casi simétrico, y el de los dobles sea más chato entre el valor mínimo y la mediana, en comparación con lo que tenemos entre la mediana y el máximo valor.
 
-De la gráfica para la variable `X5` podemos ver como a medida que nos vamos acercando a $1$ , la frecuencia de jonrones decae rapidamente, mientras que al incio es muy alta. De la gráfica para la variable `X6` podemos ver que la mayoria de los jugadores se ponchan menos de un $15\%$ de las veces que estan al bate.
+De la gráfica para la variable `X5` podemos ver como a medida que nos vamos acercando a $1$, la frecuencia de jonrones decae rapidamente, mientras que al incio es muy alta. De la gráfica para la variable `X6` podemos ver que la mayoria de los jugadores se ponchan menos de un $15\%$ de las veces que estan al bate.
+
+```{r echo=FALSE, fig.asp=1.65, fig.cap="Histograma y gráfico de cajas para las variables", fig.width=6,  paged.print=TRUE}
+
+par(mfrow=c(6,2), mai=c(0.4,0.4,0.4,0.4), mgp=c(1.8,0.6,0.3))
+
+hist(X1, main = "Histograma: Tasa de hits", ylab = "Frecuencia",
+     xlab = "X1: Hits al bate", col="Yellow")
+boxplot(X1, main = "Gráfico de Cajas: Tasa de hits", xlab="Frecuencia", 
+        col="Brown ", horizontal = T)
+
+hist(X2, main = "Histograma: Tasa carreras anotadas", ylab = "Frecuencia", 
+     xlab = "X2: Tasa de carreras anotadas", col="darkorange")
+boxplot(X2, main = "Gráfico de Cajas: Tasa carreras anotadas", xlab="Frecuencia", 
+        col="darkblue", horizontal = T)
+
+hist(X3, main = "Histograma: Tasa de dobles", ylab= "Frecuencia", 
+     xlab= "X3: Dobles por veces al bate", col="green")
+boxplot(X3, main = "Gráfico de Cajas: Tasa de dobles", xlab = "Frecuencia", 
+        col = "red", horizontal = T)
+
+#par(mfrow=c(3,2))
+hist(X4, main="Histograma: Tasa de triples", ylab ="Frecuencia", 
+     xlab="X4: Triples por veces al bate", col ="limegreen")
+boxplot(X4, main = "Gráfico de Cajas: Tasa de triples", xlab = "Frecuencia", 
+        col = "green3", horizontal = T)
+
+hist(X5, main = "Histograma: Tasa de jonrones", ylab = "Frecuencia", 
+     xlab = "X5: Jonrones por veces al bate", col="Yellow")
+boxplot(X5, main = "Gráfico de Cajas: Tasa de jonrones",xlab="Frecuencia", 
+        col="Brown", horizontal = T)
+
+hist(X6, main = "Histograma: Tasa de ponches", ylab = "Frecuencia", 
+     xlab = "X6: Ponches por veces al bate", col="darkorange")
+boxplot(X6, main = "Gráfico de Cajas: Tasa de ponches", xlab="Frecuencia", 
+        col="darkblue", horizontal = T)
+```
+
 
 ## Intervalo de confianza para la media de las variables
 
@@ -236,7 +237,9 @@ intConf<- function(variables, level){
   }
   promedios <- colMeans(Baseball)
   Variables <- c("Tasa de bateo", "Carreras anotadas", "Dobles", "Triples", "Jonrones", "Ponches")
-  dt <- data.frame(Limite_Inferior=li,Promedios=promedios,  Limite_Superior=ls, row.names = Variables)
+  dt <- cbind(Limite_Inferior=li,Promedios=promedios,  Limite_Superior=ls)
+  
+  rownames(dt)<-Variables
   
   return(dt)
 }
@@ -246,11 +249,13 @@ intervalos<-intConf(variables, 0.97)
 
 Con el uso de la función `t.test()` se puede encontrar el intervalo de confianza con una significancia de $0.03$ o $97\%$ de confianza para las variables estudiadas. Los resultados de aplicar esta función, se pueden visualizar en la tabla \@ref(tab:intervals). 
 
-```{r intervals, echo=FALSE, message=TRUE, warning=TRUE}
+\newpage
 
-kable(intervalos, caption = "Intervalos del 97% de confianza para las medias de las variables", align="ccc", digits=4,
+```{r intervals, echo=FALSE,  paged.print=TRUE}
+
+kable(intervalos, caption = "Intervalos de confianza para las medias de las variables", align="lccc", digits=4,
       col.names=c( "Limite inferior", "Promedio", "Limite Superior")) %>%
-  kable_styling(latex_options ="scale_down")
+  kable_styling(latex_options ="scale_down",  full_width = F)
 ```
 
 
@@ -270,13 +275,11 @@ Ahora, para visualizar un poco mejor estos intervalos, pasemos a graficarlos con
 ```{r fig.cap="Representación gráfica de los intervalos", echo=FALSE, message=FALSE, warning=FALSE}
 
 library(ggplot2)
-
-promedios <- colMeans(Baseball)
 Variables <- c("Tasa de bateo", "Carreras anotadas", "Dobles", "Triples", "Jonrones", "Ponches")
   
-conf_graf <- ggplot(intervalos) +
+conf_graf <- ggplot(as.data.frame(intervalos)) +
   geom_errorbar(aes(x=Variables, ymin=Limite_Inferior, ymax=Limite_Superior), width=0.4, color="blue") +
-  geom_point(aes(x=Variables, y=promedios), color="blue")
+  geom_point(aes(x=Variables, y=Promedios), color="blue")
 
 conf_graf
 ```
@@ -377,6 +380,64 @@ pairs(Baseball,
 )
 ```
 
+
+##  ANOVA para la Tasa de Bateo
+
+Para realizar el analiza de varianza sobre la variable `X1` O la tasa de bateo. Primero dividimos los datos en 3 grupos: 
+
+* Grupo 1: los bateadores con una tasa de bateo igual a $(X1<0.200)$. 
+* Grupo 2: los bateadores con una tasa de bateo igual a $(0.200\leq X1 < 0.300)$. 
+* Grupo 3: los bateadores con una tasa de bateo igual a $(0.300\leq X1)$
+
+Con esta agrupación se decidió por considerar un análisis de varianza con bloques aleatorizados donde los bloques serán los grupos y los tratamientos o métodos las distintas variables de la base de datos. 
+
+Con la tabla \@ref(tab:preANOVA) podemos apreciar las medias de los valores agrupados.Con esto valores, se puede aplicar el comando `anova` de `R` para obtener la tabla ANDEVA detallada en la tabla \@ref(tab:andeva), donde se obtiene que el p-valor para lo grupos es de $0.6198$ que es alto, indicando que la hipótesis nula para los grupos no se puede rechazar por lo que las medias por grupos son iguales. Sin embargo, para las medias por variable o  método se obtuvo un p-valor de $0.0004$ que es bastante bajo, incluso significativo indicando que las medias son distintas tal como se esperaba por los datos analizados. 
+
+Con esto podemos afirmar que los promedios de las tasas de las otras variables son iguales por cada grupo. 
+ 
+ 
+
+```{r warning=FALSE, include=FALSE}
+grupo1<- subset(Baseball, (X1<0.200) )
+grupo2<- subset(Baseball, (X1 >= 0.200 & X1 <=0.300))
+grupo3<- subset(Baseball, (X1>=0.300))
+
+media1<- colMeans(grupo1[sapply(grupo1, is.numeric)]) 
+media2<- colMeans(grupo2[sapply(grupo1, is.numeric)])
+media3<- colMeans(grupo3[sapply(grupo1, is.numeric)])
+
+medias <- rbind(media1,media2,media3)
+
+datos<- c(medias[,1] , medias[,2], medias[,3],medias[,4],medias[,5],medias[,6])
+
+variables <- gl(6,3, labels=c("X1","X2","X3","X4","X5","X6"))
+grupos = factor(rep(1:3,6), labels=c("Grupo1","Grupo2","Grupo3"))
+xtabs(datos~grupos+variables )
+```
+ 
+```{r preANOVA, echo=FALSE, warning=FALSE, fig.pos="h!"}
+library(knitr)
+library(kableExtra)
+
+kable(xtabs(datos~grupos+variables ),caption = "Tabla a dos factores para las medias de las variables") %>%
+  kable_styling(latex_options ="scale_down")
+```
+
+```{r warning=FALSE, include=FALSE}
+# Una variables 
+modelo.lineal = lm(datos~variables)
+anova(modelo.lineal)
+
+# Dos variables
+modelo.lineal2 = lm(datos~grupos+variables)
+prueba<-anova(modelo.lineal2)
+```
+
+
+```{r andeva, echo=FALSE, warning=FALSE}
+kable(prueba,caption = "Tabla a dos factores para las medias de las variables") %>%
+  kable_styling(latex_options ="scale_down")
+```
 
 
 \newpage
