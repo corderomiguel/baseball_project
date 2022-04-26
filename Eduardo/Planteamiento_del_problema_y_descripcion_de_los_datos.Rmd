@@ -1,0 +1,42 @@
+---
+title: "Planteamiento del Problema"
+author: "Eduardo Gavazut, 13-10524"
+date: "4/26/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Planteamiento del problema
+
+En el presente proyecto, el objetivo es tomar una base de datos (en este caso de diversas estadísticas que corresponden a jugadores de la MLB) y realizar distintos estudios sobre ella, los cuales serán:
+
+\begin{enumerate}
+  \item Análisis descriptivo.
+  \item Intervalo de confianza (97%) para la media de cada variable.
+  \item Probar (a nivel de 0.05) que el promedio de bateo es inferior a 0.300.
+  \item Estudiar si la tasa de ponches y de jonrones son iguales.
+  \item Prueba de bondad de ajuste para la tasa de bateo para determinar si tiene distribución normal.
+  \item Gráfico de dispersión y matriz de correlación para las variables.
+  \item Modelo de regresión final y predicción para la tasa de bateo.
+  \item Separar a la tasa de bateo en tres grupos: los que tienen menos de 0.200, los que tienen entre 0.200 y 0.300, y los que tienen más de 0.300, y realización de un análisis de varianza para estudiar si los promedios de tasas de las otras variables son iguales.
+\end{enumerate}
+
+Al final, queremos llegar a un modelo que logre predecir cómo se comportarán las variables en función a la tasa de bateo.
+
+## Descripción de la base de datos
+
+La base de datos a estudiar cuenta con 45 observaciones de 6 variables, las cuales son:
+
+\begin{enumerate}
+  \item X1 = tasa de bateo, calculada como hits/veces al bate. Entiéndase la conexión efectuada por el bateador que coloca la pelota dentro del terreno de juego, permitiéndole alcanzar al menos una base, sin que se produzca un error de defensa del equipo contrario o algún otro jugador sea declarado como fuera de juego.
+  \item X2 = carreras anotadas/veces al bate. Entiéndase carrera por anotación, y se logra al recorrer un corredor la totalidad de las bases volviendo al home, bien de manera continua (por medio de un jonrón) o de forma alternada consecutiva antes de que se realicen 3 outs.
+  \item X3 = dobles/veces al bate. Entiéndase por doble como un hit en el que el bateador logra llegar a segunda base sin ser puesto out y sin que haya error alguno de la defensiva. 
+  \item X4 = triples/veces al bate. Entiéndase por triple como un hit en el que el bateador logra llegar satisfactoriamente a tercera base, sin que ocurra ningún error por parte de la defensiva.
+  \item X5 = jonrones/veces al bate. Un jonrón se da cuando el bateador hace contacto con la pelota de una manera que le permita recorrer las bases y anotar una carrera (junto con todos los corredores en base) en la misma jugada, sin que se registre ningún out ni error de la defensa.
+  \item X6 = ponches/veces al bate. Por último, un ponche es la acción de retirar a un bateador con una cuenta de 3 strikes, al que la recibe se le suele llamar ponchao o ponchado.
+\end{enumerate}
+
+De esta forma, vemos que cada una de las variables miden números bastante relevantes para cada jugador. Como cada una de estas estadísticas pueden ocurrir una sola vez mientras se está al bate, cada una será un numéro entre el 0 y el 1.
