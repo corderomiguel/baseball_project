@@ -1,0 +1,116 @@
+---
+title: "Modelo lineal para hits"
+author: "Eduardo Gavazut, 13-10524"
+date: "4/25/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cargar la base de datos
+
+```{r}
+library(readxl)
+Baseball <- read_excel("~/Documents/Scripts de Estadística/Proyecto/Baseball.xlsx")
+head(Baseball)
+```
+
+Necesitamos extraer el 80% de los datos, entonces, tomando en cuenta que el dataset tiene 45 variables, y el 80% corresponde a 36:
+
+```{r}
+n <- 36
+set.seed(777)
+
+elegidos <- sort(sample(seq_len(nrow(Baseball)),size = n))
+Baseball_80 <- Baseball[elegidos, ]
+Baseball_20 <- Baseball[-elegidos, ]
+```
+
+Ahora, ya habiendo seleccionado nuestros datos, podemos pasar a realizar el modelo:
+
+Hagamos regresión paso a paso para de esta manera determinar cuáles variables son significativas o no al tomar en cuenta los hits. En primer lugar, hagamos un scatter plot por parejas de cada una de las variables para ver qué tan bien se distribuyen los datos:
+
+```{r}
+library("ggplot2")
+library(ggpubr)
+grafico_X2 <- ggplot(Baseball_80, aes(X1, X2)) + geom_point() + labs(x = "Tasa de Bateo", y = "Carreras anotadas/veces al bate")
+grafico_X3 <- ggplot(Baseball_80, aes(X1, X3)) + geom_point() + labs(x = "Tasa de Bateo", y = "Dobles/veces al bate")
+grafico_X4 <- ggplot(Baseball_80, aes(X1, X4)) + geom_point() + labs(x = "Tasa de Bateo", y = "Triples/veces al bate")
+grafico_X5 <- ggplot(Baseball_80, aes(X1, X5)) + geom_point() + labs(x = "Tasa de Bateo", y = "Jonrones/veces al bate")
+grafico_X6 <- ggplot(Baseball_80, aes(X1, X6)) + geom_point() + labs(x = "Tasa de Bateo", y = "Ponches/veces al bate")
+
+ggarrange(grafico_X2, grafico_X3, grafico_X4, grafico_X5, grafico_X6, ncol = 3, nrow = 2)
+```
+
+Vemos que para carreras anotadas, dobles y triples tenemos algo que se asemeja a una relación lineal positiva, mientras que para los ponches, estos disminuyen a medida que la tasa de bateo aumenta. La única variable que no parece tener ninguna relación clara con la tasa de bateo es jonrones, por lo que es una variable que puede ser descartada desde un principio.
+
+Veamos qué ocurre cuando hallamos la correlación entre las variables usando el comando ```cor()``` de R:
+
+```{r}
+cor(Baseball_80)
+```
+
+Podemos darnos cuenta de que, efectivamente, para las carreras, dobles y triples, tenemos una correlación positiva (siendo las carreras la que tiene mayor correlación, y los triples la menor). Además, para los ponches tenemos una correlación negativa bastante significativa, y entre todas las variables, los jonrones tienen la menor correlación. Todo esto corresponde a lo que vimos anteriormente con la gráfica.
+
+Ahora, pasemos a realizar el modelo lineal utilizando el comando ```lm()``` de R:
+
+```{r}
+tasa_de_bateo <- Baseball_80$X1
+carreras <- Baseball_80$X2
+dobles <- Baseball_80$X3
+triples <- Baseball_80$X4
+jonrones <- Baseball_80$X5
+ponches <- Baseball_80$X6
+
+m1 <- lm(tasa_de_bateo ~ carreras + dobles + triples + jonrones + ponches)
+summary(m1)
+```
+
+Para este primer modelo, tenemos que los triples y los jonrones son las variables menos significativas, esto nos lo indica R con el número de estrellas que tienen asignado (ninguna para los tripeles, y una sola para los jonrones). De esta forma, realicemos de nuevo el modelo pero sin estas variables:
+
+```{r}
+m2 <- lm(tasa_de_bateo ~ carreras + dobles + ponches)
+summary(m2)
+```
+
+Ahora, todas nuestras variables son bastante significativas, por lo que sus p-valores son bastante pequeños.
+
+Además, tenemos que:
+
+\begin{enumerate}
+  \item Para los estimadores, tenemos que los dobles es el mayor de todos, y este nos indica que por cada aumento del 1% en los dobles, hay un aumento correlacionado del 136% en la tasa de bateo. Es interesante ver que este estimador es muchísimo mayor que el de las carreras.
+  \item La varianza es estimada como $\hat{\sigma}^2 = 0.01705^2$.
+  \item Para el error estándar (Std. Error), podemos construir los intervalos de confianza para las variables. Primero, tenemos que $t_{32, 0.975} = 2.0369$:
+  
+  \[
+  I_{carreras} = 0.5192 \pm 2.0369*0.0868 = (0.3424, 0.6960)
+  \]
+  
+  \[
+  I_{dobles} = 1.3650 \pm 2.0369*0.3471 = (0.6580, 2.0720)
+  \]
+  
+  \[
+  I_{ponches} = -0.2451 \pm 2.0369*0.0460 = (-0.3388, -0.1514)
+  \]
+  
+  como ninguno de estos intervalos incluye el 0, se puede concluir que efectivamente hay una relación existente entre estas variables y la tasa de bateo.
+\end{enumerate}
+
+Ahora, para confirmar que este es un buen modelo, veamos que efectivamente se cumple la homocedasticidad apoyandonos nuevamente en R:
+
+```{r}
+par(mfrow=c(2,2))
+plot(m2)
+```
+
+\begin{itemize}
+  \item Cuando vemos la gráfica de "Residuals vs Fitted", nos damos cuenta de que la línea roja es bastante horizontal, y esta además está centrada alrededor del cero, es decir que podemos asumir que no hay independencia entre las variables y la tasa de bateo.
+  \item Al ver el gráfico "Normal Q-Q", vemos que todos los valores están bastante cercanos a la línea, lo que nos confirma la normalidad.
+  \item En "Scale-Location" no vemos ningún patrón, lo que nos indica homocedasticidad.
+  \item Y por último, en "Residuals vs Leverage", no hay ningún valor que esté fuera de las líneas rayadas, por lo que no parece haber valores que generen apalancamiento.
+\end{itemize}
+
+En conclusión, podemos ver que este es un buen modelo, cuyas variables son todas significativas, no tiene datos que generen apalancamiento y cumple con homocedasticidad.
