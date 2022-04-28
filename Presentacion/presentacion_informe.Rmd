@@ -1,0 +1,273 @@
+---
+title: "Análisis de una base de Datos de Beísbol"
+subtitle: "Informe final de Estadística"
+date: 8 de abril de 2022
+output: 
+  powerpoint_presentation: 
+    reference_doc: Análisis de una base de Datos de Beísbol.pptx
+    toc: true
+  beamer_presentation: default
+---
+## Planteamiento del problema 
+
+En el presente proyecto, el objetivo es tomar una base de datos (en este caso de diversas métricas que corresponden a jugadores de la MLB) y realizar distintos estudios sobre ella, los cuales serán:
+
+\begin{enumerate}
+  \item Análisis descriptivo.
+  \item Intervalo de confianza ($97\%$) para la media de cada variable.
+  \item Probar (a nivel de 0.05) que el promedio de bateo es inferior a 0.300.
+  \item Estudiar si la tasa de ponches y de jonrones son iguales.
+  \item Prueba de bondad de ajuste para la tasa de bateo para determinar si tiene distribución normal.
+  \item Gráfico de dispersión y matriz de correlación para las variables.
+  \item Modelo de regresión final y predicción para la tasa de bateo.
+  \item Separar a la tasa de bateo en tres grupos: los que tienen menos de 0.200, los que tienen entre 0.200 y 0.300, y los que tienen más de 0.300, y realización de un análisis de varianza para estudiar si los promedios de tasas de las otras variables son iguales.
+\end{enumerate}
+
+Al final, queremos llegar a un modelo que logre predecir cómo se comportarán las variables en función a la tasa de bateo.
+
+## Descripción de la base de datos
+
+La base de datos a estudiar cuenta con 45 observaciones de 6 variables, las cuales son:
+
+\begin{enumerate}
+  \item X1 = tasa de bateo, calculada como hits/veces al bate. Entiéndase la conexión efectuada por el bateador que coloca la pelota dentro del terreno de juego, permitiéndole alcanzar al menos una base, sin que se produzca un error de defensa del equipo contrario o algún otro jugador sea declarado como fuera de juego.
+  \item X2 = carreras anotadas/veces al bate. Entiéndase carrera por anotación, y se logra al recorrer un corredor la totalidad de las bases volviendo al home, bien de manera continua (por medio de un jonrón) o de forma alternada consecutiva antes de que se realicen 3 outs.
+  \item X3 = dobles/veces al bate. Entiéndase por doble como un hit en el que el bateador logra llegar a segunda base sin ser puesto out y sin que haya error alguno de la defensiva. 
+  \item X4 = triples/veces al bate. Entiéndase por triple como un hit en el que el bateador logra llegar satisfactoriamente a tercera base, sin que ocurra ningún error por parte de la defensiva.
+  \item X5 = jonrones/veces al bate. Un jonrón se da cuando el bateador hace contacto con la pelota de una manera que le permita recorrer las bases y anotar una carrera (junto con todos los corredores en base) en la misma jugada, sin que se registre ningún out ni error de la defensa.
+  \item X6 = ponches/veces al bate. Por último, un ponche es la acción de retirar a un bateador con una cuenta de 3 strikes, al que la recibe se le suele llamar ponchao o ponchado.
+\end{enumerate}
+
+De esta forma, vemos que cada una de las variables miden números bastante relevantes para cada jugador. Como cada una de estas estadísticas pueden ocurrir una sola vez mientras se está al bate, cada una será un numéro entre el 0 y el 1. 
+
+## Metododología
+
+Para la realización de esta investigación se hará uso del sofware estadístico `R` en el entorno de desarrollo intergrado (IDE) `RStudio`. En este se iniciará por una descripción de los datos y variables almacenadas en el archivo fuente *Baseball.xlsx*, tales como: mínimo, media, cuantiles y desviación estándar. Para la media de las variables se obtendrá un intervalo de confianza del $95\%$. Como se desea estudiar la relación de la tasa de bateo respecto al resto de las variables, se buscará determinar la mejor distribución de probabilidad que se ajuste a esta variable. Finalmente, se estudiará la eficiencia del mejor modelo lineal de predicción que se ajuste a los datos y permita establecer si en efecto existe tal relación entre las variables y las implicaciones que tendría en las estrategias para futuros juegos de beisbol.
+
+## Análisis de los datos
+
+Para la realización de este proyecto se contó con una archivo de excel con la información de algunos jugadores de la Major League Beisbol o MLB, el cual se almacenó en una variable llamada `Baseball`. De esta archivo podemos realizar el siguiente análisis de datos.   
+
+
+## ¿Qué clase es la base de datos?
+
+Con el comando `class`, se pudo determinar el tipo de base de datos utilizada o lo que es equivalente, la clase de la variable `Baseball`. El resultado que se obtuvo indica que es del tipo `tbl_df`, que es una subclase de la clase `data.frame`. `tbl_df` cumple con tener propiedades diferentes por defecto y se suele referir a ellas como `tibble`. Es una clase eficiente para trabajar con bases de datos grandes y su visualización.   
+
+
+## Variables en la base de datos
+
+Si se desea saber que tipo de variables están almacenadas en la base de datos, se puede utilizar el comando `str`. Esta función nos indica que se cuentan con $6$ variables denominadas `X1,X2,X3,X4,X5,X6`, y distribuidas de tal manera que representan la columnas de la base de datos. Cada una de estas variables tienen $45$ valores de tipo `double` o número decimal, que representan las $45$ observaciones aleatorias (una por fila) realizadas a jugadores de la (MLB). 
+
+## Estadísticos
+
+Para obtener los estadísticos de las seis (6) variables de esta base de datos, se inicia por guardar las $45$ observaciones en un vector que represente a cada variable. 
+
+Con los datos vectorizados se pueden aplicar las siguientes funciones: `mean` que permite obtener la media de los datos, `median` para obtener la mediana, `quantile` para retornar los cuantiles al $0.25\%, 0.50\%$ y $0.75\%$ de cada variable, `min` para el valor mínimo, `max` para el valor máximo, `var` para la varianza, `sd` que es para la desviación estándar, `IQR` es para el rango intercuartil y finalmente, el coeficiente de variación obtenido como `stad/media`. 
+
+## Estadísticos 
+
+Los resultados pueden ser apreciados en  la tabla \@ref(tab:resumen). De estos resultados hay varios puntos que podemos detacar. La varianza de los datos es muy baja indicativo que entre los datos hay pocos valores atípicos o muy dispersos, lo que se refleja en valores mas cercanos a la media. Misma interpretación se puede extender a la desviación estándar pues es la raíz cuadrada de la varianza. 
+
+Una consecuencia de la baja varianza es que la media y la mediana son valores muy cercanos. Esto es particularmente útil al analizar el valor del `RIC`, que toma como medida central la mediana de los datos. Es decir, nos indica donde se encuentra el $50\%$ de los datos, cuánto mas bajo es el valor del RIC menos dispersos están los datos. 
+
+
+## Diagramas e histograma de los datos por cada variable
+
+De la figura \@ref(fig:boxplots), podemos establecer: para la variable `X1`, que los valores máximos de los datos se obtienen luego de la media, pero el mayor volumen de ellos se encuentra antes como bien se observa en el diagrama de caja que permite confirmar, además, la ausencia de datos atípicos. Para la variable `X2`,  se puede comprobar que  ver simetría de los datos que se infería de la tabla \@ref(tab:resumem), particularmente respecto al valor $0.15$ que coincide a su vez con la media de los datos. El diagrama de caja permite confirmar la ausencia de los valores atípicos.  
+
+## Diagramas e histograma de los datos por cada variable 
+
+Por su parte, para la variable `X3` y `X4`, Vemos que en general, ambos diagramas de caja son bastante parecidos, con la única diferencia siendo que el de triples está $0.03$ puntos corrido hacia arriba y los datos desde el primer cuartil hasta la mediana están muchos más dispersos. Otra diferencia es que el diagrama de cajas para los triples no cuenta con datos atípicos, en cambio los dobles si, que corresponde a $0.3$. Todo esto hace que el diagrama de los triples sea casi simétrico, y el de los dobles sea más chato entre el valor mínimo y la mediana, en comparación con lo que tenemos entre la mediana y el máximo valor.
+
+## Diagramas e histograma de los datos por cada variable 
+
+De la gráfica para la variable `X5` podemos ver como a medida que nos vamos acercando a $1$, la frecuencia de jonrones decae rapidamente, mientras que al incio es muy alta. De la gráfica para la variable `X6` podemos ver que la mayoria de los jugadores se ponchan menos de un $15\%$ de las veces que estan al bate.
+
+## Intervalo de confianza para la media de las variables
+
+Con el uso de la función `t.test()` se puede encontrar el intervalo de confianza con una significancia de $0.03$ o $97\%$ de confianza para las variables estudiadas. Los resultados de aplicar esta función, se pueden visualizar en la tabla \@ref(tab:intervals). 
+
+Se pueden visualizar mejor estos intervalos de confianza, en la figura \@ref(fig:interconf) de los anexos.
+
+## Intervalo de confianza para la media de las variables 
+
+Note que en general, los intervalos de confianza más estrechos son los de dobles y triples, lo que nos indica que en general, con una probabilidad del $97\%$, podemos asegurar que los jugadores de la MLB tendrán un promedio de triples y dobles que puede ser estimado con bastante certeza, pero vemos que las carreras anotadas, los ponches y la tasa de bateo tienen un intervalo de confianza mucho más grande, por lo que no podemos asegurar que el promedio será estimado de forma tan certera.
+
+## Promedio de bateo 
+
+Con lo obtenido en los intervalos de confianza del apartado anterior se tiene que la tasa de bateo toma valores por debajo de $0.300$. Para corroborar este resultado, se realizará un prueba de hipótesis con un nivel de significancia de $\alpha=0.05$. 
+
+Entonces, como hipótesis nula $H_{0}$ y como hipótesis altenativa $H_{a}$ tenemos: vamos a suponer que la media de bateo, $H_{0}: \mu_{\operatorname{bateo}}\leq 0.3,\qquad  H_{\alpha}: \mu_{\operatorname{bateo}}> 0.3$
+
+## Promedio de bateo 
+
+Si suponemos que los datos presentan una distribución normal, podemos aplicar el comando `t.test` de `R`, que permite realizar pruebas de hipótesis sobre las medias de los datos cuando se trabaja con una sola variable.
+
+## Promedio de bateo
+Con esta función, se obtuvo que el valor para el estadístico $t$ es $-23.811$, con $44$ grados libertad. Como el $p-valor$ es bastante alto, de hecho es igual $0,9976$ (que representa un $99.76\%$), se cumple que $\alpha=0.05<99.76$ y por lo tanto la hipótesis alternativa se rechaza, mas aún, se rechaza para todo nivel de significancia porque se necesita un valor para $\alpha$ más alto que el $p-valor$ para rechazar la hipótesis nula.
+
+Se afirma entonces, con total seguridad, que la tasa de bateo es inferior a $0.300$, tal como se podía con el intervalo de confianza. 
+
+
+## Comparación entre las tasas de ponches y las de jonrones
+
+Ahora, deseamos comparar las tasas de ponches y de jonrones para determinar si o no parecidas. Como no tenemos conocimiento acerca de las varianzas poblacionales, usaremos el test de Welch tal y como es explicado en Heumann, Schomaker (2017) para comparar las medias. En este caso, haremos una prueba de hipótesis, donde tomaremos como hipótesis nula, $H_{0}$ e hipótesis alternativa $H_{a}$ las dadas por: \linebreak 
+$H_0 : \mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} = 0 \quad \text{ vs. } \quad H_a : \mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} \neq 0$
+
+## Comparación entre las tasas de ponches y las de jonrones
+
+Es decir, queremos determinar si las tasas de jonrones y ponches son distintas. Ahora, con apoyo del comando anterior `t.test()`, pero esta vez para comparar dos variables, podremos determinar cuál de estas hipótesis es aceptada.
+
+Como resultado se obtuvo que el $\operatorname{p-valor}=1.112\times 10^{-8}$, que es extremadamente pequeño, mucho más que el nivel de significancia $\alpha = 0.01$ que es razonable utilizar para nuestra prueba de hipótesis. Adicionalmente, el intervalo de confianza que se obtuvo fue de $(-0.1068,-0.0593)$ que no incluye el cero. Otra cosa que podemos hacer es evaluar el estadístico de prueba con el comando `qt()` (vemos por lo anterior que $dt = 55$ y $\alpha = 0.05$).
+
+## Comparación entre las tasas de ponches y las de jonrones
+
+Como $t=-8$, vemos que el estadístico cae en la región de rechazo (porque es de cola doble).
+
+Para cualquiera de estos casos, podemos concluir que la hipótesis nula se rechaza, es decir que hay suficiente evidencia para creer que $\mu_{\operatorname{jonrones}} - \mu_{\operatorname{ponches}} \neq 0$. Y además, como el intervalo de confianza es negativo, concluimos que $\mu_{\operatorname{ponches}} > \mu_{\operatorname{jonrones}}$ con un nivel de confianza del $95\%$, como se podía apreciar de la figura \@ref(fig:interconf)
+
+
+## Prueba de bondad de ajuste para la distribución de X1
+
+Para continuar con el análisis a un nivel más profundo, resulta conveniente determinar si los datos en la variable `X1`, sobre la tasa de bateos, sigue una distribución normal. 
+
+
+Como se señaló en la figura \@ref(fig:boxplots), del histograma para la variable, obtenemos entonces que si subdividimos en intervalos de longitud $0.02$ , las frecuencias son como las descritas en la tabla \ref{tab:tablafrecuencias}.
+
+## Prueba de bondad de ajuste para la distribución de X1
+
+Con la gráfica cuantil-cuantil de la figura \@ref(fig:cuantilcuantil), podemos ver que esta agrupación se ajusta bien a un distribución normal (representada por la recta). 
+
+Vamos a proceder a realizar una prueba $\chi^{2}$, que es una  prueba de hipótesis que compara la distribución observada de los datos con la distribución esperada de los datos. Para este tipo de pruebas, el estadístico de $\chi^{2}$ cuantífica que tanto varía la distribución respecto a la distribución hipotética. La hipótesis nula $H_{0}$ y la hipótesis altenativa $H_{a}$ vienen dadas por: 
+$H_{0}: \mbox{Los datos siguen una distribución normal}$ $H_{a}: \mbox{Los datos no siguen una distribución normal}$
+
+## Prueba de bondad de ajuste para la distribución de X1
+
+Como estadístico $\chi^{2}$ tenemos:  $\displaystyle X^{2}=\sum_{i=1}^{k}\frac{[n_{i}-E(n_{i})]^{2}}{E(n_{i})}$
+con $k=5$ el número de clases o categorías, $n_{i}$ las frecuencias de cada categoría, $E(n_{i})=n*p_{i}$ el valor esparado con $n$ el número total de datos y $p_{i}$ la probabilidad de cada clase $n_{i}$.  
+
+## Prueba de bondad de ajuste para la distribución de X1
+
+Para calcular las probabilidades $p_{i}$ se obtuvo la media y la desviación estándar de los datos agrupados como $\bar{x}=0.2822$ y $\sigma=0.045$,  respectivamente. Con $\bar{x}$ y $\sigma$ se obtuvieron las siguientes probabilidades para cada clase: $p_{1}=0.172,\ p_{2}=0.3082,\ p_{3}= 0.1747,\ p_{4}= 0.1466,\ p_{5}= 0.1986$. 
+
+## Prueba de bondad de ajuste para la distribución de X1
+
+Sustituyendo los datos en el estadístico tenemos que: $\chi^{2}=2.9421$, y el $p-valor$ viende dado por $1-P(\chi^{2}<2.9421)=0.2297$. El $p-valor$ es bastante alto por lo que la hipótesis nula no se rechaza para ningún nivel de significancia. Por tanto los datos siguen una distribución normal con media $0.2822$ y deviación estándar $0.045$. 
+
+## Gráfico de dispersión y matrix de correlación 
+
+Es ahora, de nuestro interés estudiar la relación entre las variables de la base de datos. Esto lo podemos observar en la figura \@ref(fig:correlacion).  Note que las gráficas de dispersión de la mitad inferior de la figura \@ref(fig:correlacion), se puede apreciar que para carreras anotadas, dobles y triples tenemos algo que se asemeja a una relación lineal positiva, mientras que para los ponches, estos disminuyen a medida que la tasa de bateo aumenta. La única variable que no parece tener ninguna relación clara con la tasa de bateo es la tasa de jonrones, por lo que es una variable que probablemente no nos ofrezca mayor información si queremos establecer un modelo lineal que relacione a las variables. 
+
+## Gráfico de dispersión y matrix de correlación 
+
+Por otro lado, con la parte superior de la figura \@ref(fig:correlacion) se tienen los coeficientes de correlación por pares de variables. Estos coeficientes nos indican que, efectivamente, para las carreras, dobles y triples, tenemos una correlación positiva (siendo las carreras la que tiene mayor correlación, y los triples la menor). Además, para los ponches tenemos una correlación negativa bastante significativa, y entre todas las variables, los jonrones tienen la menor correlación. 
+
+## Muestreo 80%-20%
+
+Como por la figura \@ref(fig:correlacion), parece existir una relación lineal entre las variables, particularmente vamos a estar interesados en ver como se relaciona cada campo información (carreras, dobles, etc.) con la variable `X1` que es la tasa de bateo. Con `R` tenemos la posibilidad de obtener un modelo de regresión lineal con la función `lm`. 
+
+## Muestreo 80%-20%
+
+Pero para asegurarnos que el modelo sea el más adecuado, priemero necesitamos extraer una muestra que permita que entrenar al modelo de predicción, y con los datos restantes probar que tan eficiente es el modelo. Con este objetivo, se dividen los datos en un $80\%$ para el entrenamiento y en un $20\%$ para las pruebas. 
+
+## Muestreo 80%-20%
+
+Como la base base de datos consta de $45$ observaciones por variable, el $80\%$ representa tomar una muestra aleatoria de $36$ observaciones, por los que el $20\%$ restante serán las $9$ no tomadas en la muestra. Vale la pena resaltar que se habla de observaciones, o las filas de la base de datos y no de las entradas particulares de cada variable porque se busca estudiar la relación por jugador, de su tasa de bateo, respecto a  su tasa de carreras, dobles, triples, jonrones y ponches. En otras palabras, las filas son independientes entre sí y por eso se pueden tomar muestras al azar, pero las columnas no lo son por ser datos relativos a un jugador en particular. 
+
+## Modelo de regresión lineal para la variable X1
+
+Ahora, teniendo seleccionado nuestros datos, podemos pasar a realizar el modelo.
+
+La mejor manera de realizar un modelo de regresión lineal es seguir el método de **regresión paso a paso**, de esta manera determinar cuáles variables son significativas o no al tomar en cuenta la tasa de bateo. 
+
+## Modelo de regresión lineal para la variable X1
+
+Ahora, pasemos a realizar el modelo lineal utilizando el comando `lm()` de R. Se desarrolla primero el modelo dado por $Y=\beta_{0}+\beta_{1}x_{1}+\beta_{2}x_{2}+\beta_{3}x_{3}+\beta_{4}x_{4}+\beta_{5}x_{5}+\epsilon$. Suponiendo que \linebreak $E(\epsilon)=0$, buscamos estimar los parámetro $\beta_{i}$ para los cuales  $E[Y]=\beta_{0}+\beta_{1}x_{1}+\beta_{2}x_{2}+\beta_{3}x_{3}+\beta_{4}x_{4}+\beta_{5}x_{5}$.
+
+Con el comando `lm()` se obtuvo que el único valor no significativo (y de hecho el p-valor más alto) fue la tasa de triples, seguido de la tasa de jonrones  que era significativa a nivel $0.05$. 
+
+## Modelo de regresión lineal para la variable X1
+
+De esta forma, realicemos de nuevo el modelo pero sin la variable $X4$ correspondiente a los triples. Es decir, el modelo a estimar es: $E[Y]=\beta_{0}+\beta_{1}x_{1}+\beta_{2}x_{2}+\beta_{4}x_{4}+\beta_{5}x_{5}+\beta_{6}x_{6}$. 
+
+Con `R` se obtuvo en esta prueba, que la tasa de jonrones es la variables con p-valor mas alto, con $0.0611$. A pesar, de ser significativa a nivel de $0.1$ procedemos a realizar una nueva prueba, esta vez sin la tasa de jonrones.
+
+## Modelo de regresión lineal para la variable X1
+
+EL nuevo modelo, consiste en estimar $E[Y]=\beta_{0}+\beta_{1}x_{1}+\beta_{2}x_{2}+\beta_{6}x_{6}$. Ahora, todas nuestras variables son bastante significativas, por lo que sus p-valores son bastante pequeños, significativos a nivel $0.001$. Los valores estimados fueron: $\beta_{0}=0.1630$, $\beta_{1}=0.5192$, $\beta_{2}=1.3650$ y $\beta_{6}=-0.2451$. 
+
+## Modelo de regresión lineal para la variable X1
+
+Como medida del error, tenemos el $R^{2}_{ajus}$, con valor $0.8489$, indicando que hay un buen ajuste de los datos al modelo. 
+
+Además, tenemos que:
+
+\begin{enumerate}
+  \item Para los estimadores, los dobles es el mayor de todos, y este nos indica que por cada aumento del $1\%$ en la tasa de dobles, hay un aumento correlacionado del $136\%$ en la tasa de bateo. Es interesante ver que este estimador es muchísimo mayor que el de las carreras.
+  \item La varianza es estimada como $\hat{\sigma}^2 = 0.01705^2$.
+  \item Para el error estándar (Std. Error), podemos construir los intervalos de confianza para las variables. Primero, tenemos que $t_{32, 0.975} = 2.0369$: $I_{carreras} = 0.5192 \pm 2.0369*0.0868 = (0.3424, 0.6960)$. $I_{dobles} = 1.3650 \pm 2.0369*0.3471 = (0.6580, 2.0720)$ $I_{ponches} = -0.2451 \pm 2.0369*0.0460 = (-0.3388, -0.1514)$
+  
+
+Como ninguno de estos intervalos incluye el $0$, se puede concluir que efectivamente hay una relación existente entre estas variables seleccionadas y la tasa de bateo.
+\end{enumerate}
+
+## Modelo de regresión lineal para la variable X1
+
+Ahora, veamos que efectivamente se cumple con las característica de un buen modelo apoyándonos en las gráficas de la figura \@ref(fig:modelo).
+
+\begin{itemize}
+  \item Cuando vemos la gráfica de "Residuos vs Ajustados", nos damos cuenta de que la línea roja es bastante horizontal, y esta además está centrada alrededor del cero, es decir que podemos asumir que no hay independencia entre las variables y la tasa de bateo.
+  \item Al ver el gráfico "Normal Cuantil-Cuantil", vemos que todos los valores están bastante cercanos a la recta, lo que nos confirma la normalidad.
+  \item En "Escala-Localización" no vemos ningún patrón, lo que nos indica que los valores presentan homocedasticidad.
+  \item Y por último, en "Residuos vs Apalancamiento", no hay ningún valor que esté fuera de las líneas rayadas, por lo que no parece haber valores que generen apalancamiento.
+\end{itemize}
+
+En conclusión, podemos ver que este es un buen modelo, cuyas variables son todas significativas, no tiene datos que generen apalancamiento y cumple con homocedasticidad.
+
+## Modelo de regresión lineal para la variable X1
+
+Sintetizando, nuestro modelos es:
+$\hat{Y}=0.1630+(0.5192)x_2+(1.3605)x_3-(0.2451)x_6$
+
+## Prueba y predicción del modelo lineal
+
+Ahora, haremos uso del comando `predict` para hacer la predicción de la variable X1 (tasa de hits), utilizando las $9$ observaciones que se seleccionaron previamente. 
+
+Luego calculamos la diferencia entre los valores reales y los valores estimados por el modelo.  Los resultados se muestran en la  tabla \@ref(tab:prediccion). Es claro que los residuos son bastante pequeños, así que se considera que el modelo es suficientemente bueno para predecir la tasa de hits.
+
+
+##  ANOVA para la Tasa de Bateo
+
+Para finalizar, estamos interesados en realizar un análisis de varianza sobre la variable `X1` O la tasa de bateo, para compararla con el resto de los variables. Particularmente queremos realizar, el estudio sobre $3$ categorías o grupos: 
+
+* Grupo 1: los bateadores con una tasa de bateo igual a $(X1<0.200)$. 
+* Grupo 2: los bateadores con una tasa de bateo igual a $(0.200\leq X1 < 0.300)$. 
+* Grupo 3: los bateadores con una tasa de bateo igual a $(0.300\leq X1)$
+
+Con esta agrupación se opta por realizar un análisis de varianza con bloques aleatorizados, donde los bloques serán los grupos y los tratamientos o métodos serán las distintas variables de la base de datos. 
+
+##  ANOVA para la Tasa de Bateo
+
+Con la tabla \@ref(tab:preANOVA) podemos apreciar las medias de los valores agrupados. Con estos valores, se puede aplicar el comando `anova` de `R` para obtener la tabla ANDEVA, tal y como se detalla en la tabla \@ref(tab:andeva). 
+
+##  ANOVA para la Tasa de Bateo
+
+En esta tabla, se aprecia que el p-valor para lo grupos es de $0.6198$ que es alto, indicando que la hipótesis nula para los grupos no se puede rechazar, es decir, que las medias por grupos son iguales. Sin embargo, para las medias clasificadas por variable o  método se obtuvo un p-valor de $0.0004$ que es bastante bajo, incluso significativo indicando que las medias son distintas tal como se esperaba por los datos analizados. 
+
+Con esto podemos afirmar con seguridad, que los promedios de las tasas son iguales por cada grupo. 
+
+
+## Conclusiones
+
+De todo el análisis anterior se deduce que:
+
+1. No hay demasiada variabilidad entre las diferentes tasas de bateo, por lo que en general los jugadores de la MLB proyectan rendimientos similares (aunque esto depende del grado de exactitud con el que se quiera medir).
+
+2. La tasa de bateo es en media al menos mas del doble que la tasa de ponches para cualquier jugador (esto se sigue de la tabla 2).
+
+3. La tasa de hits sigue aproximadamente un distribución normal centrada en $0.2822$ y con desviación estándar de $0.045$.
+
+4. Las variables más significativas (entre las estudiadas), para predecir la tasa de hits o bateos son la tasa de carreras, la tasa de dobles, y la tasa de ponches, con estas se puede lograr un buen modelo lineal.
+
+
+# Referencias

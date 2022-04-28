@@ -1,0 +1,166 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{staprojteamusbsty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Definición de comandos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Encabezado y pie de p\'agina
+\pagestyle{fancy}
+\fancyhf{}
+
+\chead[C]{
+	\begin{tabular}{m{2cm}m{10cm}m{4cm}}
+		\includegraphics[height=1cm]{Imagenes/logoUSB.png}
+		&
+		\centering
+		\fcolorbox{white}{sseccolor}{\fbox{\begin{minipage}{9cm}
+					\centering
+					\textcolor{white}{\bfseries{Proyecto Final de Estadística}}
+		\end{minipage}}}
+		&
+		\centering 
+		\tiny{ \vspace{2mm}\hspace{-12mm}C03322-Estadística para Matemáticos\\
+			\hspace{-12mm}Trimestre: Enero-Marzo 2022\\ 
+		}\tabularnewline
+		%          \hline
+	\end{tabular}%
+}
+
+\renewcommand{\headrulewidth}{.2pt}
+\renewcommand{\footrulewidth}{.2pt}
+\addtolength{\headheight}{.1pt}
+\fancyfoot[L]{Gavazut, Riera y Cordero}
+\fancyfoot[R]{Prof. Pedro Ovalles}
+\fancyfoot[C]{\thepage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% Titulo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% create title
+\providecommand{\maketitle}{}
+\renewcommand{\maketitle}{%
+	\begingroup
+	\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+	% for perfect author name centering
+	\renewcommand{\@makefnmark}{\hbox to \z@{$^{\@thefnmark}$\hss}}
+	% The footnote-mark was overlapping the footnote-text,
+	% added the following to fix this problem               (MK)
+	\long\def\@makefntext##1{%
+		\parindent 1em\noindent
+		\hbox to 1.8em{\hss $\m@th ^{\@thefnmark}$}##1
+	}
+	\thispagestyle{empty}
+	\@maketitle
+	%\@notice
+	\endgroup
+	\let\maketitle\relax
+}
+
+% rules for title box at top of first page
+\newcommand{\@toptitlebar}{
+	\hrule height 2\p@
+	\vskip 0.25in
+	\vskip -\parskip%
+}
+\newcommand{\@midtitlebar}{
+	\hrule height 0.1\p@
+	\vskip 0.25in
+	\vskip -\parskip%
+}
+\newcommand{\@bottomtitlebar}{
+	\vskip 0.09in
+	\vskip -\parskip
+	\hrule height 2\p@
+	\vskip 0.29in%
+}
+
+% create title (includes both anonymized and non-anonymized versions)
+\providecommand{\@maketitle}{}
+\renewcommand{\@maketitle}{%
+	\vbox{%
+		\hsize\textwidth
+		\linewidth\hsize
+		\vskip 0.1in
+		\begin{minipage}{0.15\textwidth}{
+				\centering
+				\includegraphics[height=2cm]{Imagenes/logoUSB.png}}
+		\end{minipage}
+		\hspace{25pt}
+		\begin{minipage}{0.75\textwidth}
+			\vspace{5mm}
+			\centering
+			\@toptitlebar
+			{\LARGE \bfseries \@titulo\par}
+			\vskip 0.2in
+			\@midtitlebar
+		\end{minipage}
+		\textsc{}\\
+		\def\And{% Es lo que se coloca entre autor AND autor por eso cierra primero y luego abre el entorno Tabular
+		\end{tabular}\hfil\linebreak[0]\hfil%
+		\begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+		}
+		\begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\@autor\end{tabular}%
+		\vskip 0.3in \@minus 0.1in \center{\@fecha} \\ \vskip 0.4in \justify
+		\begin{quote}
+			\noindent\textcolor{seccolor}{\textbf{\textsc{Resumen:}}} \@resumen\\[1mm]
+			\noindent\textcolor{seccolor}{\textbf{Palabras clave:}} \@palabrasc \vskip 0.1in \@bottomtitlebar
+		\end{quote}
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% --- Colores predeterminados
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{sseccolor}{HTML}{1C7302}
+\definecolor{seccolor}{HTML}{328E00}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Definici\'on de comandos de datos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Interlineado
+\newcommand{\interlineado}[1]{\renewcommand\@interlineado{#1}}
+%% Espaciado entre párrafos
+\newcommand{\espaciop}[1]{\renewcommand\@espaciop{#1}}
+%% Sangria
+\newcommand{\sangria}[1]{\renewcommand\@sangria{#1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% --- Estilo p\'agina
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Modificaci\'on del título de las referencias
+%\renewcommand\bibname{Referencias}
+%%  Interlineado
+\renewcommand{\baselinestretch}{\@interlineado}
+%% Numeraci\'on de las secciones y subsecciones
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+%% Modificaci\'on de las etiquetas de enumeraciones
+\renewcommand{\labelenumiii}{\roman{enumiii}.}
+%% Espaciado de listas y enumeraciones
+\setlist[itemize]{noitemsep, topsep=-5pt, listparindent=\parindent}
+\setlist[enumerate]{noitemsep,topsep=-5pt, listparindent=\parindent}
+%% Definiciones de medidas
+\setlength{\parindent}{\@sangria}
+\setlength{\parskip}{\@espaciop}
+%% Estilo de contadores de tabla
+\renewcommand\thetable{\arabic{table}}
+\renewcommand\thefigure{\arabic{figure}}
+\renewcommand\theequation{\arabic{equation}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% -- Definici\'on de ambientes matemáticos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheoremstyle{estiloteorema}%
+{9pt}{9pt}{\slshape}{0pt}{\color{seccolor}\bfseries\scshape}{.}{ }{}
+\theoremstyle{estiloteorema}
+\newtheorem{teo}{Teorema}
+\newtheorem{prop}{Proposición}
+\newtheorem{lem}{Lema}
+\newtheorem{axioma}{Axioma}
+\newtheorem{ejem}{Ejemplo}
+\newtheorem{ejer}{Ejercicio}
+% \theoremstyle{definition}
+\newtheorem{defi}{Definción}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endinput
+%%
+%%  Fin del archivo .

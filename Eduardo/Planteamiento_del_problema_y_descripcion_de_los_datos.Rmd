@@ -2,7 +2,9 @@
 title: "Planteamiento del Problema"
 author: "Eduardo Gavazut, 13-10524"
 date: "4/26/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

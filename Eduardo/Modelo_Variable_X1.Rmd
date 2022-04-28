@@ -2,7 +2,9 @@
 title: "Modelo lineal para hits"
 author: "Eduardo Gavazut, 13-10524"
 date: "4/25/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(readxl)
-Baseball <- read_excel("~/Documents/Scripts de Estadística/Proyecto/Baseball.xlsx")
+Baseball <- read_excel("../data/Baseball.xlsx")
 head(Baseball)
 ```
 
@@ -26,6 +28,7 @@ set.seed(777)
 elegidos <- sort(sample(seq_len(nrow(Baseball)),size = n))
 Baseball_80 <- Baseball[elegidos, ]
 Baseball_20 <- Baseball[-elegidos, ]
+Baseball_20
 ```
 
 Ahora, ya habiendo seleccionado nuestros datos, podemos pasar a realizar el modelo:
@@ -71,9 +74,20 @@ summary(m1)
 Para este primer modelo, tenemos que los triples y los jonrones son las variables menos significativas, esto nos lo indica R con el número de estrellas que tienen asignado (ninguna para los tripeles, y una sola para los jonrones). De esta forma, realicemos de nuevo el modelo pero sin estas variables:
 
 ```{r}
-m2 <- lm(tasa_de_bateo ~ carreras + dobles + ponches)
+m2 <- lm(X1 ~ X2 + X3 +X6, data=Baseball_80)
 summary(m2)
 ```
+```{r message=FALSE, warning=FALSE}
+predict.lm(m2,newdata=Baseball_20,interval="confidence")
+
+```
+
+
+
+
+
+
+
 
 Ahora, todas nuestras variables son bastante significativas, por lo que sus p-valores son bastante pequeños.
 

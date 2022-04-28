@@ -1,0 +1,150 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Plantilla del Team para el proyecto final 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Nueva clase personalizada
+\documentclass{staprojteamusb}
+%%%%%%%%%% Nuevo estilo personalizado
+\usepackage{staprojteamusbsty}
+
+\addbibresource{referencias.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Variables de Markdown
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Encabezado 
+\titulo{Análisis estadístico sobre una base de datos de beísbol.}
+
+\autor{
+		Miguel Cordero\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:15-10326@usb.ve}{\nolinkurl{15-10326@usb.ve}}} \\
+	 \And
+		Eduardo Gavazut\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:13-10524@usb.ve}{\nolinkurl{13-10524@usb.ve}}} \\
+	 \And
+		Luis Riera\\
+	Universidad Simón Bolívar \\
+	Caracas, Venezuela \\
+	\texttt{\href{mailto:16-10976@usb.ve}{\nolinkurl{16-10976@usb.ve}}} \\
+	}
+\fecha{8 de abril de 2022}
+\resumen{Este es un ejemplo de plantilla generado en RStudio para mostrar como se vería el proyecto final. Se realizarán una serie de análisis cuantitativos y cualitativos sobre una base de datos de beísbol. Se exponen los resultados y algunas conclusiones que se pueden extraer de los mismos. Cualquier error puede ser notificado para su corrección final. ESTO NO ES UN RESUMEN, se los estoy diciendo literal XD.}
+
+\palabrasc{Proyecto, Estadistica, Rstudio, Beisbol}
+%%%%%%%%%%%% Resto de las variables propias de R eso viene por defecto de R
+
+
+%%%%%%%%% Estilo de las listas sin salto de linea
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%%%%%%%%%%  Estilo de las tablas propias de R
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % Para la minipaginas y sus tamaños
+%%%%%%%%%% Para las tablas y los parrafos \paragraph o \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Para los pie de pagina en tablas largas
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+%%%%%%%%%%%% Si hay paquetes por incluir en header-include
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+	
+	
+	\maketitle
+	
+	%%%%%%%%%%%% Si hay cosas que incluir en include-before
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	%%%%%%%%%%%%% Inicio del documento
+	
+	\hypertarget{anova-para-la-tasa-de-bateo}{%
+ \section{ANOVA para la Tasa de Bateo}\label{anova-para-la-tasa-de-bateo}}
+
+ Para realizar el analiza de varianza sobre la variable \texttt{X1} O la tasa de bateo. Primero dividimos los datos en 3 grupos:
+
+ \begin{itemize}
+ \tightlist
+ \item
+   Grupo 1: los bateadores con una tasa de bateo igual a \((X1<0.200)\).
+ \item
+   Grupo 2: los bateadores con una tasa de bateo igual a \((0.200\leq X1 < 0.300)\).
+ \item
+   Grupo 3: los bateadores con una tasa de bateo igual a \((0.300\leq X1)\)
+ \end{itemize}
+
+ Con esta agrupación se decidió por considerar un análisis de varianza con bloques aleatorizados donde los bloques serán los grupos y los tratamientos o métodos las distintas variables de la base de datos.
+
+ Con la tabla \ref{tab:preANOVA} podemos apreciar las medias de los valores agrupados.Con esto valores, se puede aplicar el comando \texttt{anova} de \texttt{R} para obtener la tabla ANDEVA detallada en la tabla \ref{tab:andeva}, donde se obtiene que el p-valor para lo grupos es de \(0.6198\) que es alto, indicando que la hipótesis nula para los grupos no se puede rechazar por lo que las medias por grupos son iguales. Sin embargo, para las medias por variable o método se obtuvo un p-valor de \(0.0004\) que es bastante bajo, incluso significativo indicando que las medias son distintas tal como se esperaba por los datos analizados.
+
+ Con esto podemos afirmar que los promedios de las tasas de las otras variables son iguales por cada grupo.
+
+ \begin{table}
+
+ \caption{\label{tab:preANOVA}Tabla a dos factores para las medias de las variables}
+ \centering
+ \resizebox{\linewidth}{!}{
+ \begin{tabular}[t]{l|r|r|r|r|r|r}
+ \hline
+   & X1 & X2 & X3 & X4 & X5 & X6\\
+ \hline
+ Grupo1 & 0.1935000 & 0.0820000 & 0.0365000 & 0.0070000 & 0.00650 & 0.1965000\\
+ \hline
+ Grupo2 & 0.2580400 & 0.1327600 & 0.0414400 & 0.0087200 & 0.02228 & 0.1204800\\
+ \hline
+ Grupo3 & 0.3212778 & 0.1837222 & 0.0542778 & 0.0153333 & 0.02900 & 0.0716667\\
+ \hline
+ \end{tabular}}
+ \end{table}
+
+ \begin{table}
+
+ \caption{\label{tab:andeva}Tabla a dos factores para las medias de las variables}
+ \centering
+ \resizebox{\linewidth}{!}{
+ \begin{tabular}[t]{l|r|r|r|r|r}
+ \hline
+   & Df & Sum Sq & Mean Sq & F value & Pr(>F)\\
+ \hline
+ grupos & 2 & 0.0019826 & 0.0009913 & 0.5020692 & 0.6197546\\
+ \hline
+ variables & 5 & 0.1334024 & 0.0266805 & 13.5132135 & 0.0003524\\
+ \hline
+ Residuals & 10 & 0.0197440 & 0.0019744 & NA & NA\\
+ \hline
+ \end{tabular}}
+ \end{table}
+	
+	%%%%%%%%%%%%% Fin del documento
+	
+	%%%%%%%%%%%% Inicio de la bibliografia
+	\nocite{*}
+	\printbibliography
+	
+	
+	%%%%%%%%%%%%% Fin de la bibliografia
+	
+	%%%%%%%%%%%%%%%%% Si hay cosas que incluir en include-after
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+\end{document}

@@ -93,6 +93,9 @@ justification=centerlast,tablename=Tabla]{caption}
 \usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{colorlinks=true,linkcolor=seccolor,urlcolor=seccolor, citecolor=seccolor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Nuevos comandos
 

@@ -1,0 +1,142 @@
+---
+title: Análisis estadístico sobre una base de datos de beísbol.
+authors:
+  - name: Eduardo Gavazut
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 13-10524@usb.ve
+  - name: Luis Riera
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email:  16-10976@usb.ve
+  - name: Miguel Cordero
+    affiliation: Universidad Simón Bolívar
+    location: Caracas, Venezuela
+    email: 15-10326@usb.ve
+
+output: 
+  pdf_document:
+    template: template.tex
+    keep_tex: true
+  html_notebook: default
+---
+
+
+# Descripción de los datos 
+
+Para la realización de este proyecto se contó con una archivo de excel con la información de algunos jugadores de la Major League Beisbol o MLB, el cual se almacenó en una variable llamada `Baseball`:  
+
+```{r include= FALSE}
+# Inicializamos la librería que permite leer archivos xlsx
+#install.packages('readxl')
+#library(readxl)
+# Asignamos a una variable la información almacenada en el archivo
+Baseball <- read_excel("../../data/Baseball.xlsx")
+# Mostramos las primeras 5 entradas
+head(Baseball, n=5)
+```
+
+## Realizar un análisis descriptivo de los datos
+
+### ¿Qué clase es la base de datos?
+
+Con el comando `class`, se pudo determinar el tipo de base de datos utilizada o lo que es equivalente, la clase de la variable `Baseball`.
+
+```{r include=FALSE}
+class(Baseball)
+```
+
+El resultado que se obtuvo indica que es del tipo `tbl_df`, que es una subclase de la clase `data.frame`. `tbl_df` cumple con tener propiedades diferentes por defecto y se suele referir a ellas como `tibble`. Es una clase eficiente para trabajar con bases de datos grandes y su visualización.   
+
+### Variables en la base de datos
+
+```{r include=FALSE}
+str(Baseball)
+```
+
+Si se desea saber que tipo de variables están almacenadas en la base de datos, se puede utilizar el comando `str`. Esta función nos indica que se cuentan con $6$ variables denominadas `X1,X2,X3,X4,X5,X6`, y distribuidas de tal manera que representan la columnas de la base de datos. Cada una de estas variables tienen $45$ valores de tipo `double` o número decimal, que representan las $45$ observaciones aleatorias (una por fila) realizadas a jugadores de la (MLB) . 
+
+Cada variable representa la siguiente información: 
+
+* `X1`: tasa de bateo, (hit/veces al bate).
+* `X2`: tasa de carreras anotadas, (carreras anotadas/veces al bate). 
+* `X3`: tasa de dobles, (dobles/ veces al bate). 
+* `X4`: tasa de triples, (tripes/ veces al bate).
+* `X5`: tasa de jonrones, (jonrones/ veces al bate).
+* `X6`: tasa de ponches, (ponches/ veces al bate). 
+
+### Estadísticos
+
+Para obtener los estadísticos de las seis (6) variables de esta base de datos, se inicia por guardar las $45$ observaciones en un vector que represente a cada variable. 
+
+```{r include=FALSE}
+X5<- Baseball$X5
+X6<- Baseball$X6
+```
+
+Con los datos vectorizados se pueden aplicar las siguientes funciones: `mean` que permite obtener la media de los datos, `median` para obtener la mediana, `quantile` retornar los cuantiles al $0.25\%, 0.50\%$ y $0.75\%$ de cada variable, `min` para el valor mínimo, `max` para el valor máximo, `var` para la varianza, `sd` desviación estándar, `IQR` es para el rango intercuartil y finalmente, el coeficiente de variación obtenido como `stad/media`. 
+
+
+```{r, include=FALSE}
+# Minimo 
+minimo <- c(min(X5),min(X6))
+# Media
+media <- c(mean(X5), mean(X6))
+# Mediana
+mediana<- c(median(X5), median(X6))
+# Cuartile 1: 25%
+q1 <- c(quantile(X5,0.25), quantile(X6,0.25))
+# Cuartile 3: 75%
+q3 <- c(quantile(X5,0.75), quantile(X6,0.75))
+# Maximo 
+maximo <- c(max(X6),max(X6))
+# Rango Intercuartile 
+ric <- c(IQR(X5), IQR(X6))
+# Varianza 
+varianza <- c(var(X5), var(X6))
+# Desviación estándar
+stad <- c(sd(X5), sd(X6))
+# Coeficiente de variación
+coef_var <-  stad/media 
+```
+
+
+Podemos ver la información por cada variable en las siguientes tablas:  
+
+```{r echo=FALSE}
+# Unimos los valores obtenidos
+estadisticos <- cbind(round(minimo, digits=4),round(q1, digits = 4), round(media, digits=4),
+                      round(mediana,digits=4),round(q3, digits=4), round(maximo, digits=4),
+                      round(ric, digits=4),round(varianza, digits=4), round(stad, digits=4),
+                      round(coef_var, digits=4))
+# Definimos los nombres de las columnas y filas
+rownames(estadisticos) <- c("X5", "X6") 
+colnames(estadisticos) <- c("Minimo", "25%", "Media", "Mediana / 50" ,"75%", "Máximo", "RIC",
+                            "Varianza", "Desv. Estándar","Coef. Variación")
+# Mostramos el arreglo
+estadisticos
+```
+De estos resultados hay varios puntos que podemos detacar. La varianza de los datos es muy baja indicativo que entre los datos no hay valores atípicos; la media y la mediana difieren poco, y el maximo de x5 y x6 coincide, esto  indica que hay cierta simetría en los datos recolectados; sin embargo, la diferencia entre el máximo y el mínimo para la tasa de bateo es casi el doble en comparación con la tasa de carreras anotadas. 
+
+### Diagramas e histograma de los datos por cada variable
+
+```{r echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables X5", echo=FALSE}
+par(mfrow=c(1,2))
+hist(X5, main = "Histograma de la variable X5", ylab = "Frecuencia", xlab = "X5:tasa de jonrones", 
+     col="Yellow")
+boxplot(X5, main = "Gráfico de Cajas variable X5", 
+        ylab="X5: tasa de jonrones (jonrones/veces al bate)", col="Brown ")
+```
+
+De la gráfica para la variable X5 podemos ver como a medida que nos vamos acercando a 1 , la frecuencia de jonrones decae rapidamente, mientras que al incio es muy alta  
+
+```{r echo=FALSE, fig.cap="Histograma y gráfico de cajas para las variables X6", echo=FALSE}
+par(mfrow=c(1,2))
+hist(X6, main = "Histograma de la variable X6", ylab = "Frecuencia", xlab = "X6:Tasa de ponches", 
+     col="darkorange")
+boxplot(X6, main = "Gráfico de Cajas variable X6", 
+        ylab="X6: Carreras anotadas (ponches/veces al bate)", col="darkblue")
+```
+
+De la gráfica para la variable X6 podemos ver que la mayoria de los jugadores se ponchan menos de un 15% de las veces que estan al bate.
+
